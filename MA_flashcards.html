@@ -9,7 +9,12 @@
     --ink:#14201c; --paper:#faf8f3; --panel:#ffffff;
     --line:#dfd9cc; --muted:#6b7a72; --brand:#1f6b52; --brand-d:#164d3b;
     --gold:#b8863b; --wrong:#b04a3a; --shadow:0 1px 3px rgba(20,32,28,.08);
-    --pa:#1f6b52; --pb:#3a6ea5; --pc:#8a7a5a;
+    --pa:#c0392b; --pb:#3a6ea5; --pc:#8a7a5a;
+    --known:#1f6b52; --fuzzy:#c67a32;
+    /* 出題ソース（落ち着いた色） */
+    --src1:#4a6d8c; --src2:#7a6a9a; --src3:#a86a5c; --src4:#6b7a5a;
+    /* デッキ（落ち着いた色） */
+    --dk1:#3f5e70; --dk2:#8a6a4a; --dk3:#6a5a80; --dk4:#5a7a6a; --dk5:#9a6a5a;
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%}
@@ -18,16 +23,21 @@
     background:var(--paper); color:var(--ink); line-height:1.55;
     -webkit-font-smoothing:antialiased;
   }
-  .wrap{max-width:760px;margin:0 auto;padding:18px 16px 90px;min-height:100%}
+  .wrap{max-width:760px;margin:0 auto;padding:18px 16px 92px;min-height:100%}
   header{display:flex;align-items:baseline;justify-content:space-between;gap:12px;border-bottom:2px solid var(--ink);padding-bottom:10px;margin-bottom:14px;flex-wrap:wrap}
   h1{font-size:19px;font-weight:700;letter-spacing:.01em}
   h1 .en{font-family:Georgia,"Times New Roman",serif;font-style:italic;color:var(--brand)}
   .count{font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
 
-  /* controls */
-  .controls{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 12px 6px;margin-bottom:16px;box-shadow:var(--shadow)}
-  .ctrl-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;align-items:center}
-  .ctrl-row .lbl{font-size:11.5px;color:var(--muted);width:70px;flex-shrink:0;padding-top:5px}
+  /* top tabs (screens) */
+  .screen-tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+  .screen-tabs button{border:1px solid var(--line);background:#fff;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;color:var(--muted)}
+  .screen-tabs button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+  .controls{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 12px 10px;margin-bottom:16px;box-shadow:var(--shadow)}
+  .ctrl-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;align-items:flex-start}
+  .ctrl-row:last-child{margin-bottom:2px}
+  .ctrl-row .lbl{font-size:11.5px;color:var(--muted);width:78px;flex-shrink:0;padding-top:6px;font-weight:600}
   .chips{display:flex;flex-wrap:wrap;gap:6px;flex:1}
   .chip{font-size:12.5px;padding:5px 11px;border:1px solid var(--line);background:#fff;border-radius:999px;cursor:pointer;color:var(--ink);transition:.12s;white-space:nowrap}
   .chip:hover{border-color:var(--brand)}
@@ -35,19 +45,44 @@
   .chip.pa.on{background:var(--pa);border-color:var(--pa)}
   .chip.pb.on{background:var(--pb);border-color:var(--pb)}
   .chip.pc.on{background:var(--pc);border-color:var(--pc)}
-  .mode-tabs{display:flex;gap:0;border:1px solid var(--brand);border-radius:8px;overflow:hidden;margin-bottom:2px}
-  .mode-tabs button{flex:1;border:none;background:#fff;color:var(--brand);padding:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
-  .mode-tabs button.on{background:var(--brand);color:#fff}
-  .opts{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted);padding:2px 0 8px;align-items:center}
+  /* デッキ選択色（全デッキ共通） */
+  .chip.dk4.on{background:var(--dk4);border-color:var(--dk4)}
+  .seg{display:flex;flex-wrap:wrap;gap:6px;flex:1}
+  .seg .chip.on{background:var(--brand);border-color:var(--brand);color:#fff}
+  /* 出題ソース選択色（.segより詳細度を上げる） */
+  .seg .chip.src1.on{background:var(--src1);border-color:var(--src1)}
+  .seg .chip.src2.on{background:var(--src2);border-color:var(--src2)}
+  .seg .chip.src3.on{background:var(--src3);border-color:var(--src3)}
+  .seg .chip.src4.on{background:var(--src4);border-color:var(--src4)}
+
+  .start-row{display:flex;gap:10px;align-items:center;margin-top:14px;flex-wrap:wrap}
+  .start-btn{background:var(--brand);color:#fff;border:none;border-radius:9px;padding:12px 22px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit}
+  .start-btn:hover{background:var(--brand-d)}
+  .start-btn:disabled{opacity:.4;cursor:default}
+  .avail{font-size:12.5px;color:var(--muted)}
+  .mode-mini{display:flex;gap:0;border:1px solid var(--brand);border-radius:8px;overflow:hidden}
+  .mode-mini button{border:none;background:#fff;color:var(--brand);padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
+  .mode-mini button.on{background:var(--brand);color:#fff}
+  .opts{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted);padding:4px 0 2px;align-items:center}
   .opts label{cursor:pointer;display:flex;align-items:center;gap:4px}
+
+  /* stat pills */
+  .stats{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+  .statpill{flex:1;min-width:120px;background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:10px 12px;text-align:center;box-shadow:var(--shadow)}
+  .statpill .n{font-size:22px;font-weight:700;font-variant-numeric:tabular-nums}
+  .statpill .k{font-size:11px;color:var(--muted);margin-top:1px}
+  .statpill.known .n{color:var(--known)} .statpill.fuzzy .n{color:var(--fuzzy)}
+  .statpill.review .n{color:#b8863b}
 
   /* card */
   .stage{min-height:300px;display:flex;flex-direction:column;align-items:center;justify-content:center}
-  .card{width:100%;background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:0 4px 18px rgba(20,32,28,.09);padding:30px 26px;cursor:pointer;position:relative;min-height:270px;display:flex;flex-direction:column;justify-content:center}
+  .card{width:100%;background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:0 4px 18px rgba(20,32,28,.09);padding:30px 26px;cursor:pointer;position:relative;min-height:280px;display:flex;flex-direction:column;justify-content:center}
   .badges{position:absolute;top:12px;left:14px;display:flex;gap:6px;align-items:center}
   .pri{font-size:10.5px;font-weight:700;color:#fff;padding:2px 8px;border-radius:4px;letter-spacing:.03em}
   .pri.A{background:var(--pa)} .pri.B{background:var(--pb)} .pri.C{background:var(--pc)}
   .deck-tag{font-size:11px;color:var(--muted)}
+  .stat-dot{font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:4px;color:#fff}
+  .stat-dot.known{background:var(--known)} .stat-dot.fuzzy{background:var(--fuzzy)}
   .flip-hint{position:absolute;top:12px;right:14px;font-size:10.5px;color:#bcb6a6}
   .front-txt{font-size:27px;font-weight:700;text-align:center;word-break:break-word}
   .front-txt.serif{font-family:Georgia,"Times New Roman",serif}
@@ -60,16 +95,13 @@
   .ans-meaning{font-size:14px;margin-top:12px;text-align:center;color:var(--ink)}
   .ans-usage{font-size:12.5px;margin-top:8px;text-align:center;color:var(--muted);font-style:italic}
   .cat-line{text-align:center;font-size:11px;color:#a89f8c;margin-top:14px}
-
-  /* self-grade */
   .grade{display:flex;gap:10px;margin-top:16px;width:100%}
   .grade button{flex:1;padding:11px;border-radius:8px;border:1px solid;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;background:#fff}
-  .g-no{color:var(--wrong);border-color:var(--wrong)}
-  .g-no:hover{background:var(--wrong);color:#fff}
+  .g-no{color:var(--fuzzy);border-color:var(--fuzzy)}
+  .g-no:hover{background:var(--fuzzy);color:#fff}
   .g-ok{color:var(--brand);border-color:var(--brand)}
   .g-ok:hover{background:var(--brand);color:#fff}
 
-  /* quiz */
   .quiz-q{width:100%;background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:26px 22px}
   .quiz-prompt{font-size:22px;font-weight:700;text-align:center;margin-bottom:6px;word-break:break-word}
   .quiz-prompt.serif{font-family:Georgia,serif}
@@ -81,6 +113,39 @@
   .choice.wrong{background:#f7e9e6;border-color:var(--wrong);color:var(--wrong)}
   .choice:disabled{cursor:default}
   .quiz-explain{margin-top:14px;font-size:12.5px;color:var(--muted);text-align:center;min-height:18px}
+  .quiz-grade{display:flex;gap:10px;margin-top:14px}
+  .quiz-grade button{flex:1;padding:10px;border-radius:8px;border:1px solid;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit;background:#fff}
+
+  /* session summary */
+  .summary{width:100%;background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:28px 24px;text-align:center}
+  .summary h2{font-size:18px;margin-bottom:16px}
+  .summary .big{font-size:34px;font-weight:700;color:var(--brand);font-variant-numeric:tabular-nums}
+  .summary .sub{font-size:13px;color:var(--muted);margin:4px 0 20px}
+  .sum-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+  .sum-actions button{padding:11px 18px;border-radius:9px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;border:1px solid var(--brand)}
+  .sum-actions .primary{background:var(--brand);color:#fff;border-color:var(--brand)}
+  .sum-actions .ghost{background:#fff;color:var(--brand)}
+  .sum-list{text-align:left;margin-top:18px;border-top:1px solid var(--line);padding-top:14px}
+  .sum-list h3{font-size:12px;color:var(--fuzzy);margin-bottom:8px}
+  .sum-item{font-size:13px;padding:4px 0;border-bottom:1px solid #f0ece2}
+
+  /* list screen */
+  .list-tools{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center}
+  .list-tools .seg{flex:none}
+  .listbox{background:var(--panel);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow);overflow:hidden}
+  .litem{display:flex;align-items:center;gap:12px;padding:11px 14px;border-bottom:1px solid #f0ece2}
+  .litem:last-child{border-bottom:none}
+  .litem .lfront{font-weight:600;font-size:14px;flex:0 0 190px;width:190px;word-break:break-word}
+  .litem .lfront.serif{font-family:Georgia,serif}
+  .litem .lback{font-size:13px;color:var(--muted);flex:1;min-width:0;word-break:break-word}
+  .lstate-group{display:flex;gap:4px;flex-shrink:0}
+  .lstate-group .sbtn{border:1px solid var(--line);background:#fff;border-radius:6px;cursor:pointer;font-size:11px;padding:5px 8px;font-family:inherit;color:var(--muted);white-space:nowrap;line-height:1.2}
+  .lstate-group .sbtn:hover{border-color:var(--brand)}
+  .lstate-group .sbtn.on-new{background:#eee7d8;border-color:#cfc3aa;color:#6b5f47;font-weight:700}
+  .lstate-group .sbtn.on-fuzzy{background:var(--fuzzy);border-color:var(--fuzzy);color:#fff;font-weight:700}
+  .lstate-group .sbtn.on-known{background:var(--known);border-color:var(--known);color:#fff;font-weight:700}
+  .list-empty{padding:40px 20px;text-align:center;color:var(--muted);font-size:14px}
+  .export-btn{font-size:12px;padding:7px 12px;border:1px solid var(--line);background:#fff;border-radius:7px;cursor:pointer;font-family:inherit;color:var(--ink)}
 
   /* nav */
   .nav{position:fixed;bottom:0;left:0;right:0;background:rgba(250,248,243,.96);border-top:1px solid var(--line);backdrop-filter:blur(6px)}
@@ -91,9 +156,16 @@
   .progress{flex:1;height:5px;background:var(--line);border-radius:3px;overflow:hidden}
   .progress i{display:block;height:100%;background:var(--brand);width:0;transition:width .2s}
   .pos{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
-  .empty{text-align:center;color:var(--muted);padding:60px 20px;font-size:14px}
-  .shuffle-btn{font-size:12px !important;padding:9px 12px !important}
   .score{font-size:12px;color:var(--brand-d);font-weight:600;font-variant-numeric:tabular-nums}
+  .end-btn{font-size:12px !important;padding:9px 12px !important}
+  .empty{text-align:center;color:var(--muted);padding:60px 20px;font-size:14px}
+  .warn{background:#fdf6e9;border:1px solid #e8d9b0;border-radius:8px;padding:9px 12px;font-size:12px;color:#8a6d2f;margin-bottom:14px;display:none}
+  @media (max-width:560px){
+    .litem{flex-wrap:wrap}
+    .litem .lfront{flex:0 0 100%;width:100%}
+    .litem .lback{flex:0 0 100%;width:100%;margin-top:2px}
+    .lstate-group{margin-top:6px}
+  }
 </style>
 </head>
 <body>
@@ -103,73 +175,180 @@
     <span class="count" id="count"></span>
   </header>
 
-  <div class="controls">
-    <div class="mode-tabs">
-      <button id="mFlash" class="on" onclick="setMode('flash')">暗記カード</button>
-      <button id="mQuiz" onclick="setMode('quiz')">4択クイズ</button>
+  <div class="warn" id="storageWarn">※ このプレビュー環境では学習記録が保存されません。記録を残すには、ファイルをダウンロードしてブラウザで直接開いてください。</div>
+
+  <div class="screen-tabs">
+    <button id="tabStudy" class="on" onclick="showScreen('setup')">学習する</button>
+    <button id="tabLists" onclick="showScreen('lists')">記録リスト</button>
+  </div>
+
+  <!-- SETUP SCREEN -->
+  <div id="setupScreen">
+    <div class="stats">
+      <div class="statpill review"><div class="n" id="stDue">0</div><div class="k">今日の復習</div></div>
+      <div class="statpill"><div class="n" id="stNew">0</div><div class="k">未学習</div></div>
+      <div class="statpill known"><div class="n" id="stKnown">0</div><div class="k">覚えた</div></div>
+      <div class="statpill fuzzy"><div class="n" id="stFuzzy">0</div><div class="k">あやふや</div></div>
     </div>
-    <div class="opts">
-      <label><input type="checkbox" id="optReverse"> 出題を逆向き（答え→用語）</label>
-      <label><input type="checkbox" id="optHideMeaning"> 解説を隠す</label>
-    </div>
-    <div class="ctrl-row">
-      <span class="lbl">デッキ</span>
-      <div class="chips" id="deckChips"></div>
-    </div>
-    <div class="ctrl-row" id="catRow">
-      <span class="lbl">カテゴリ</span>
-      <div class="chips" id="catChips"></div>
-    </div>
-    <div class="ctrl-row">
-      <span class="lbl">重要度</span>
-      <div class="chips" id="priChips">
-        <span class="chip pa on" data-p="A" onclick="togglePri(this)">A 最初に</span>
-        <span class="chip pb on" data-p="B" onclick="togglePri(this)">B 重要</span>
-        <span class="chip pc on" data-p="C" onclick="togglePri(this)">C 知っておく</span>
+
+    <div class="controls">
+      <div class="ctrl-row">
+        <span class="lbl">出題ソース</span>
+        <div class="seg" id="sourceSeg">
+          <span class="chip src1 on" data-s="review" onclick="pickSource(this)">今日の復習</span>
+          <span class="chip src2" data-s="all" onclick="pickSource(this)">全部から</span>
+          <span class="chip src3" data-s="fuzzy" onclick="pickSource(this)">あやふやのみ</span>
+          <span class="chip src4" data-s="new" onclick="pickSource(this)">新規（未学習）のみ</span>
+        </div>
+      </div>
+      <div style="font-size:11.5px;color:var(--muted);padding-left:78px;margin-top:-4px;margin-bottom:10px">「今日の復習」は、復習期限が来た語を優先し、なければ新規語を出します。毎日開けば忘却前に自動で出題されます。</div>
+      <div class="ctrl-row">
+        <span class="lbl">出題形式</span>
+        <div class="mode-mini">
+          <button id="mFlash" class="on" onclick="pickMode('flash')">暗記カード</button>
+          <button id="mQuiz" onclick="pickMode('quiz')">4択クイズ</button>
+        </div>
+      </div>
+      <div class="ctrl-row">
+        <span class="lbl">1回の問題数</span>
+        <div class="seg" id="sizeSeg">
+          <span class="chip" data-n="10" onclick="pickSize(this)">10問</span>
+          <span class="chip on" data-n="20" onclick="pickSize(this)">20問</span>
+          <span class="chip" data-n="40" onclick="pickSize(this)">40問</span>
+          <span class="chip" data-n="0" onclick="pickSize(this)">全部</span>
+        </div>
+      </div>
+      <div class="ctrl-row">
+        <span class="lbl">デッキ</span>
+        <div class="chips" id="deckChips"></div>
+      </div>
+      <div class="ctrl-row" id="catRow">
+        <span class="lbl">カテゴリ</span>
+        <div class="chips" id="catChips"></div>
+      </div>
+      <div class="ctrl-row">
+        <span class="lbl">重要度</span>
+        <div class="chips" id="priChips">
+          <span class="chip pa on" data-p="A" onclick="togglePri(this)">A 高</span>
+          <span class="chip pb on" data-p="B" onclick="togglePri(this)">B 中</span>
+          <span class="chip pc on" data-p="C" onclick="togglePri(this)">C 低</span>
+        </div>
+      </div>
+      <div style="font-size:11.5px;color:var(--muted);padding-left:78px;margin-top:-4px;margin-bottom:8px">重要度 A（高）・B（中）・C（低）。カード左上のバッジ色と対応。</div>
+      <div class="opts">
+        <label><input type="checkbox" id="optReverse"> 出題を逆向き（答え→用語）</label>
+        <label><input type="checkbox" id="optHideMeaning"> 解説を隠す</label>
+        <label><input type="checkbox" id="optShuffle" checked> 順番をランダム化</label>
+      </div>
+      <div class="start-row">
+        <button class="start-btn" id="startBtn" onclick="startSession()">開始</button>
+        <span class="avail" id="availLbl"></span>
       </div>
     </div>
   </div>
 
-  <div class="stage" id="stage"></div>
+  <!-- PLAY SCREEN -->
+  <div id="playScreen" style="display:none">
+    <div class="stage" id="stage"></div>
+  </div>
+
+  <!-- LISTS SCREEN -->
+  <div id="listsScreen" style="display:none">
+    <div class="list-tools">
+      <div class="seg" id="listSeg">
+        <span class="chip on" data-l="fuzzy" onclick="pickList(this)">あやふや</span>
+        <span class="chip" data-l="known" onclick="pickList(this)">覚えた</span>
+        <span class="chip" data-l="new" onclick="pickList(this)">未学習</span>
+      </div>
+      <button class="export-btn" onclick="exportList()">この一覧をコピー</button>
+      <button class="export-btn" onclick="resetProgress()">記録をリセット</button>
+    </div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:10px">各行の右側のボタンで状態を変更できます（現在の状態が色付き）。別の状態に変えると、この一覧の対象から外れて表示が消えます。</div>
+    <div class="listbox" id="listBox"></div>
+  </div>
 </div>
 
-<div class="nav">
+<div class="nav" id="navBar" style="display:none">
   <div class="nav-inner">
     <button id="prevBtn" onclick="prev()">‹ 前</button>
     <div class="progress"><i id="bar"></i></div>
     <span class="pos" id="pos">0 / 0</span>
     <span class="score" id="scoreLbl"></span>
-    <button class="shuffle-btn" onclick="shuffleDeck()">シャッフル</button>
+    <button class="end-btn" onclick="endSession()">終了</button>
     <button id="nextBtn" onclick="next()">次 ›</button>
   </div>
 </div>
 
 <script>
 const DATA = [{"d":"M&A専門用語","c":"M&A Process","f":"M&A strategy","b":"M&A戦略","m":"成長・事業ポートフォリオ上どの領域を買収で獲得するかの方針","u":"corporate M&A strategy","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"inorganic growth","b":"非連続成長","m":"買収・提携による外部成長。自社成長(organic)と対比","u":"inorganic growth strategy","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"bolt-on acquisition","b":"ボルトオン買収","m":"既存事業に追加する比較的小規模な補完的買収","u":"bolt-on deal","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"platform acquisition","b":"プラットフォーム買収","m":"以後の追加買収の土台とする中核的買収","u":"platform company","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"roll-up","b":"ロールアップ","m":"同業を連続買収し規模を集約する戦略","u":"roll-up strategy","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"buy-and-build","b":"バイ・アンド・ビルド","m":"プラットフォーム取得後にボルトオンを重ねる手法","u":"buy-and-build thesis","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"investment thesis","b":"投資仮説","m":"なぜ買うか・どう価値を生むかの中核ロジック","u":"deal thesis / value thesis","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"strategic rationale","b":"戦略的合理性","m":"買収を正当化する戦略上の理由","u":"strategic fit","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"adjacency","b":"隣接領域","m":"既存事業に隣接する事業・市場","u":"adjacent market","p":"C","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"deal sourcing","b":"案件ソーシング","m":"買収候補案件を発掘・獲得する活動","u":"proprietary sourcing","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"origination","b":"オリジネーション","m":"案件の発掘・組成。sourcingとほぼ同義","u":"deal origination","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"proprietary deal","b":"独自案件","m":"入札を経ない相対の非公開案件","u":"proprietary opportunity","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"off-market","b":"オフマーケット","m":"広く売り出されていない非公開の売却案件","u":"off-market deal","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"target screening","b":"ターゲット選別","m":"候補企業を基準で絞り込む作業","u":"screening criteria","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"longlist","b":"ロングリスト","m":"候補企業を広く並べた初期リスト","u":"build a longlist","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"shortlist","b":"ショートリスト","m":"優先候補に絞った短いリスト","u":"shortlisted targets","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"target universe","b":"ターゲットユニバース","m":"検討対象となる候補企業の全体集合","u":"the target universe","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"pipeline","b":"パイプライン","m":"進行中・見込みの案件の一覧","u":"deal pipeline","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"initial approach","b":"初期接触","m":"候補企業への最初のコンタクト","u":"make an initial approach","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"teaser","b":"ティーザー","m":"対象会社を匿名で紹介する1枚概要","u":"anonymous teaser","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"blind profile","b":"ブラインドプロファイル","m":"社名を伏せた対象概要。teaserと同種","u":"blind teaser","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"expression of interest","b":"関心表明","m":"買収検討の初期的意思表示","u":"express interest","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"NDA","b":"秘密保持契約","m":"開示情報の秘密保持を定める契約","u":"execute an NDA","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"confidentiality agreement","b":"守秘義務契約","m":"NDAと同義","u":"sign the CA","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"CIM","b":"企業情報パッケージ","m":"対象会社の詳細を記した投資家向け資料","u":"Confidential Information Memorandum","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"information memorandum","b":"インフォメーション・メモrandum","m":"CIMと同義。IMと略す","u":"IM / info memo","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"management presentation","b":"マネジメントプレゼン","m":"経営陣による対象会社説明の場・資料","u":"MP session","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"top management meeting","b":"トップ面談","m":"売り手・買い手の経営トップ同士の面談。相性・意向を確認する節目","u":"top management meeting","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"sell-side","b":"売り手側","m":"売却側のアドバイザリー立場","u":"sell-side advisor","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"buy-side","b":"買い手側","m":"買収側のアドバイザリー立場","u":"buy-side mandate","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"financial advisor","b":"フィナンシャルアドバイザー","m":"M&Aを助言する専門家。FAと略す","u":"engage an FA","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"mandate","b":"マンデート","m":"アドバイザーに与えられる正式な委任","u":"exclusive mandate","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"engagement letter","b":"業務委任契約書","m":"FA報酬・業務範囲等を定める契約","u":"sign the engagement letter","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"auction process","b":"入札プロセス","m":"複数買い手を競わせる売却手続","u":"competitive auction","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"competitive process","b":"競争入札","m":"auctionと同義の競争的売却","u":"run a competitive process","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"bilateral / one-on-one","b":"相対交渉","m":"単独の買い手と行う交渉","u":"bilateral negotiation","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"process letter","b":"プロセスレター","m":"入札の手続・期限を伝える書面","u":"first-round process letter","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"data room","b":"データルーム","m":"DD資料を開示する仮想空間。VDRとも","u":"virtual data room (VDR)","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"Q&A process","b":"Q&Aプロセス","m":"買い手質問への回答を管理する手続","u":"Q&A log","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"initial evaluation","b":"初期評価","m":"一次的な対象価値・魅力度の評価","u":"initial assessment","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"indicative valuation","b":"指標的評価額","m":"確定前の目安としての価値レンジ","u":"indicative range","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"preliminary due diligence","b":"予備的DD","m":"本格DD前の初期的調査","u":"preliminary DD","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"IOI","b":"関心表明書","m":"初期的な購入意向を示す書面","u":"indication of interest","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"indication of interest","b":"インディケーション","m":"IOIの正式名称","u":"submit an IOI","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"NBO","b":"拘束力のない提案","m":"価格帯等を示す非拘束の提案書","u":"non-binding offer","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"non-binding offer","b":"非拘束オファー","m":"法的拘束力を伴わない提案","u":"non-binding indication","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"binding offer","b":"拘束力のある提案","m":"法的拘束力を持つ最終提案","u":"binding bid","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"first-round bid","b":"一次入札","m":"入札の第一段階での提示","u":"first-round offer","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"final bid","b":"最終入札","m":"入札最終段階での提示","u":"final-round bid","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"preferred bidder","b":"優先交渉権者","m":"独占交渉を認められた買い手候補","u":"selected as preferred bidder","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"exclusivity","b":"独占交渉権","m":"一定期間他者と交渉しない権利","u":"exclusivity period","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"standstill","b":"スタンドスティル","m":"一定行為を控える合意（株式取得等）","u":"standstill agreement","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"signing","b":"サイニング","m":"確定契約への署名","u":"signing date","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"closing","b":"クロージング","m":"取引実行・決済の完了","u":"closing date","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"completion","b":"完了（英）","m":"closingの英国的表現","u":"completion accounts","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"target company","b":"対象会社","m":"買収の対象となる会社","u":"the target","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"acquirer","b":"買収者","m":"買い手側の主体","u":"strategic acquirer","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"bidder","b":"入札者","m":"買収に応札する主体","u":"competing bidder","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"strategic buyer","b":"事業会社（戦略買い手）","m":"事業シナジー目的の買い手","u":"strategic vs financial buyer","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"financial sponsor","b":"ファイナンシャルスポンサー","m":"PE等の投資目的の買い手","u":"financial buyer / sponsor","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"holdco","b":"持株会社","m":"子会社株式を保有する上位会社","u":"HoldCo structure","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"opco","b":"事業会社","m":"実事業を行う下位会社","u":"OpCo / HoldCo","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"special purpose vehicle","b":"特別目的会社","m":"取引実行のため設立する器。SPV/SPC","u":"acquisition SPV","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"newco","b":"ニューコー","m":"買収用に新設する会社","u":"NewCo formation","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"subsidiary","b":"子会社","m":"支配下にある会社","u":"wholly-owned subsidiary","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"affiliate","b":"関連会社","m":"一定の関係を持つ会社","u":"affiliated entity","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"parent company","b":"親会社","m":"子会社を支配する会社","u":"ultimate parent","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"shareholder","b":"株主","m":"株式を保有する者","u":"majority shareholder","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"equity interest","b":"持分","m":"会社に対する出資持分","u":"acquire equity interest","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"controlling interest","b":"支配持分","m":"経営を支配できる持分","u":"acquire a controlling interest","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"minority interest","b":"少数持分","m":"支配に至らない持分","u":"minority stake","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"majority stake","b":"過半数持分","m":"50%超の持分","u":"acquire a majority stake","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"cap table","b":"資本構成表","m":"株主・持分・希薄化を一覧化した表","u":"capitalization table","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"fully diluted","b":"完全希薄化後","m":"新株予約権等を全て行使した前提の株式数","u":"fully diluted shares","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"preferred shares","b":"優先株式","m":"配当・残余財産で優先する種類株式","u":"preferred stock","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"common shares","b":"普通株式","m":"標準的な議決権付株式","u":"common stock","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"option pool","b":"ストックオプションプール","m":"役職員向けに留保する新株予約権枠","u":"employee option pool","p":"C","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"board of directors","b":"取締役会","m":"会社の意思決定機関","u":"board approval","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"corporate governance","b":"コーポレートガバナンス","m":"会社の統治の仕組み","u":"governance structure","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"fiduciary duty","b":"受託者責任","m":"取締役等が負う忠実・善管注意義務","u":"fiduciary duties of directors","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"shareholders agreement","b":"株主間契約","m":"株主間の権利義務を定める契約。SHA","u":"SHA terms","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"articles of incorporation","b":"定款","m":"会社の基本規則を定める文書","u":"amend the articles","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"bylaws","b":"付属定款（英米）","m":"会社運営の細則","u":"corporate bylaws","p":"C","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"drag-along","b":"ドラッグ・アロング","m":"多数株主が少数株主に売却を強制する権利","u":"drag-along right","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"tag-along","b":"タグ・アロング","m":"少数株主が同条件で売却に参加する権利","u":"tag-along right","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"right of first refusal","b":"優先買取権","m":"第三者売却前に優先購入できる権利。ROFR","u":"ROFR","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"pre-emptive right","b":"新株引受権","m":"持分維持のため新株を優先取得する権利","u":"pre-emptive rights","p":"C","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"veto right","b":"拒否権","m":"一定事項を否決できる権利","u":"reserved matters / veto","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"material contract","b":"重要契約","m":"事業上重要な契約","u":"material contracts review","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"change of control","b":"支配権の変更","m":"株主・支配の異動。CoC条項の起点","u":"change-of-control clause","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"CoC clause","b":"CoC条項","m":"支配権変更時に相手方に権利を与える条項","u":"CoC provision","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"assignment","b":"譲渡（契約上の地位）","m":"契約上の権利義務の移転","u":"assignment clause","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"novation","b":"更改","m":"契約当事者の入替を伴う契約の作り直し","u":"novation agreement","p":"C","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"consent","b":"承諾（第三者）","m":"契約相手等からの同意取得","u":"third-party consent","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"termination clause","b":"解除条項","m":"契約を終了できる条件を定める条項","u":"termination for cause","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"non-compete","b":"競業避止","m":"一定期間の競合行為を禁じる約定","u":"non-compete covenant","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"non-solicit","b":"勧誘禁止","m":"従業員・顧客の引抜きを禁じる約定","u":"non-solicitation","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"exclusivity clause","b":"独占条項","m":"相手方との独占的取引を定める条項","u":"exclusive dealing","p":"C","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"most favored nation","b":"最恵待遇","m":"他者より不利にしない待遇。MFN","u":"MFN clause","p":"C","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"litigation","b":"訴訟","m":"係争中・潜在の法的紛争","u":"pending litigation","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"contingent liability","b":"偶発債務","m":"発生が不確実な潜在債務","u":"contingent liabilities","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"indemnity (existing)","b":"既存補償","m":"既存契約上の補償関係","u":"existing indemnities","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"regulatory investigation","b":"規制当局調査","m":"当局による調査・照会","u":"ongoing investigation","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"compliance","b":"コンプライアンス","m":"法令・規範の遵守","u":"compliance program","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"anti-bribery","b":"贈収賄防止","m":"FCPA等の腐敗防止規制対応","u":"anti-bribery / FCPA","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"FCPA","b":"米国海外腐敗行為防止法","m":"米国の海外贈賄を禁じる法律","u":"FCPA compliance","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"sanctions","b":"制裁（経済）","m":"OFAC等の経済制裁規制","u":"sanctions screening","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"export control","b":"輸出管理","m":"技術・製品の輸出規制","u":"export control review","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"data privacy","b":"データプライバシー","m":"個人情報保護規制。GDPR/CCPA等","u":"data privacy compliance","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"GDPR","b":"EU一般データ保護規則","m":"EUの個人データ保護規制","u":"GDPR exposure","p":"C","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"intellectual property","b":"知的財産","m":"特許・商標・著作権等。IP","u":"IP portfolio","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"patent","b":"特許","m":"発明を保護する権利","u":"patent portfolio","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"trademark","b":"商標","m":"商品・役務の識別標識の権利","u":"registered trademark","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"license agreement","b":"ライセンス契約","m":"IP等の使用許諾契約","u":"in-bound license","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"IP assignment","b":"IP譲渡","m":"知的財産権の移転","u":"IP assignment agreement","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"enterprise value","b":"事業価値","m":"事業全体の価値。EV。株式価値+純有利子負債","u":"EV / equity value bridge","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"equity value","b":"株式価値","m":"株主に帰属する価値","u":"equity value","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"net debt","b":"純有利子負債","m":"有利子負債から現預金を控除した額","u":"net debt at closing","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"EV to equity bridge","b":"EV-株式価値ブリッジ","m":"EVから株式価値へ調整する橋渡し","u":"equity bridge","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"cash-free debt-free","b":"現金・負債なし前提","m":"現預金と有利子負債を除いた取引前提。CFDF","u":"cash-free, debt-free basis","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"debt-like items","b":"負債類似項目","m":"純有利子負債に準じ控除される項目","u":"debt-like adjustments","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"cash-like items","b":"現金類似項目","m":"現預金に準じ加算される項目","u":"cash-like items","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"EBITDA","b":"EBITDA","m":"利払前税引前償却前利益","u":"reported EBITDA","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"adjusted EBITDA","b":"調整後EBITDA","m":"一時項目等を調整した正常収益力","u":"adj. EBITDA","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"normalized EBITDA","b":"正常化EBITDA","m":"恒常的な収益力に正規化した利益","u":"normalized earnings","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"add-back","b":"アドバック","m":"EBITDAに足し戻す一時・非経常費用","u":"add-back schedule","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"normalization","b":"正常化","m":"非経常・オーナー費用等を調整する作業","u":"normalization adjustments","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"run-rate","b":"ランレート","m":"直近実績を年換算した水準","u":"run-rate EBITDA","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"pro forma","b":"プロフォーマ","m":"一定調整を反映した想定ベース","u":"pro forma financials","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"LTM","b":"直近12ヶ月","m":"Last Twelve Monthsの業績","u":"LTM EBITDA","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"NTM","b":"今後12ヶ月","m":"Next Twelve Monthsの予想","u":"NTM revenue","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"EBIT","b":"EBIT","m":"利払前税引前利益","u":"EBIT margin","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"gross margin","b":"売上総利益率","m":"売上総利益÷売上高","u":"gross margin %","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"operating margin","b":"営業利益率","m":"営業利益÷売上高","u":"operating margin","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"EBITDA margin","b":"EBITDAマージン","m":"EBITDA÷売上高","u":"EBITDA margin","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"quality of earnings","b":"収益の質","m":"報告利益の持続性・信頼性の検証。QoE","u":"QoE report","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"QoE report","b":"QoEレポート","m":"財務DDの中核成果物","u":"QoE analysis","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"one-off / non-recurring","b":"一時的項目","m":"反復しない収益・費用","u":"non-recurring items","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"owner's compensation","b":"オーナー報酬調整","m":"過大・過少なオーナー報酬の正常化","u":"owner comp add-back","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"management adjustment","b":"経営陣調整","m":"経営陣提示の調整。要検証","u":"mgmt adjustments","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"earnings bridge","b":"収益ブリッジ","m":"報告値から調整値への橋渡し","u":"EBITDA bridge","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"working capital","b":"運転資本","m":"営業活動に必要な流動的資本","u":"working capital adjustment","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"net working capital","b":"正味運転資本","m":"流動資産-流動負債（営業性）。NWC","u":"NWC","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"NWC peg","b":"運転資本ペグ","m":"取引前提とする基準運転資本水準","u":"working capital peg / target","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"normalized NWC","b":"正常運転資本","m":"季節性等を均した基準NWC","u":"normalized working capital","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"working capital target","b":"運転資本目標","m":"調整基準となる目標NWC","u":"target working capital","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"closing working capital","b":"クロージング運転資本","m":"実行時点の実績NWC","u":"closing NWC","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"true-up","b":"トゥルーアップ","m":"基準との差額を事後精算する処理","u":"post-closing true-up","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"seasonality","b":"季節性","m":"運転資本等の季節変動","u":"working capital seasonality","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"cash conversion cycle","b":"資金回収サイクル","m":"仕入から現金回収までの日数","u":"CCC","p":"C","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"DSO","b":"売上債権回転日数","m":"売掛金の回収日数","u":"days sales outstanding","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"DPO","b":"仕入債務回転日数","m":"買掛金の支払日数","u":"days payable outstanding","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"DIO","b":"在庫回転日数","m":"在庫の保有日数","u":"days inventory outstanding","p":"C","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"free cash flow","b":"フリーキャッシュフロー","m":"事業が生む自由資金。FCF","u":"unlevered FCF","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"unlevered FCF","b":"アンレバードFCF","m":"借入前提を除いた事業FCF","u":"UFCF","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"levered FCF","b":"レバードFCF","m":"借入返済後の株主帰属FCF","u":"levered FCF","p":"C","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"cash conversion","b":"現金転換率","m":"利益がどれだけ現金化するか","u":"FCF conversion","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"capex","b":"設備投資","m":"有形固定資産等への投資。CapEx","u":"maintenance vs growth capex","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"maintenance capex","b":"維持設備投資","m":"現状維持に必要な投資","u":"maintenance capex","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"growth capex","b":"成長設備投資","m":"拡大のための追加投資","u":"growth capex","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"revenue recognition","b":"収益認識","m":"売上を計上する会計基準・方針","u":"revenue recognition policy","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"deferred revenue","b":"前受収益","m":"未提供役務に対する前受金","u":"deferred revenue balance","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"recurring revenue","b":"反復収益","m":"継続的に得られる売上","u":"recurring revenue base","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"ARR","b":"年間経常収益","m":"Annual Recurring Revenue","u":"ARR growth","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"MRR","b":"月間経常収益","m":"Monthly Recurring Revenue","u":"MRR","p":"C","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"backlog","b":"受注残","m":"未計上の確定受注","u":"order backlog","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"churn","b":"解約率","m":"顧客・収益の逸失率","u":"customer churn","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"retention rate","b":"維持率","m":"顧客・収益の維持割合","u":"net revenue retention","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"customer concentration","b":"顧客集中","m":"少数顧客への売上依存","u":"customer concentration risk","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"organic growth","b":"オーガニック成長","m":"買収を除く自律的な成長","u":"organic growth rate","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"price/volume/mix","b":"価格・数量・構成","m":"売上変動の要因分解","u":"price/volume/mix analysis","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"COGS","b":"売上原価","m":"Cost of Goods Sold","u":"COGS ratio","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"SG&A","b":"販管費","m":"販売費及び一般管理費","u":"SG&A expenses","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"contribution margin","b":"限界利益","m":"売上-変動費","u":"contribution margin","p":"C","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"unit economics","b":"ユニットエコノミクス","m":"1顧客・1単位あたりの採算","u":"unit economics","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"operating leverage","b":"営業レバレッジ","m":"固定費比率による利益変動の増幅","u":"operating leverage","p":"C","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"provision","b":"引当金","m":"将来損失に備える計上額","u":"provisions review","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"accrual","b":"未払・未収計上","m":"発生主義に基づく計上","u":"accrued liabilities","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"bad debt","b":"貸倒れ","m":"回収不能債権","u":"bad debt provision","p":"C","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"aging","b":"年齢表（債権）","m":"債権の経過期間別内訳","u":"AR aging","p":"C","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"impairment","b":"減損","m":"資産価値の切下げ","u":"goodwill impairment","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"goodwill","b":"のれん","m":"買収対価と純資産の差額","u":"goodwill balance","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"intangible assets","b":"無形資産","m":"特許・顧客関係等の非物的資産","u":"intangible assets","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"off-balance-sheet","b":"オフバランス","m":"貸借対照表に載らない債務等","u":"off-balance-sheet items","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"related-party transaction","b":"関連当事者取引","m":"グループ・オーナー等との取引","u":"related-party transactions","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"DCF","b":"割引現在価値法","m":"将来CFを割り引く評価法","u":"DCF valuation","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"WACC","b":"加重平均資本コスト","m":"負債・資本の加重平均コスト","u":"discount at WACC","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"terminal value","b":"継続価値","m":"予測期間後の価値。TV","u":"terminal value","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"trading comparables","b":"類似上場企業比較","m":"上場企業のマルチプルで評価","u":"trading comps","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"transaction comparables","b":"類似取引比較","m":"過去M&A事例で評価","u":"transaction comps / precedents","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"EV/EBITDA multiple","b":"EV/EBITDA倍率","m":"EVをEBITDAで割った評価倍率","u":"entry multiple","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"multiple","b":"マルチプル（倍率）","m":"価値評価に用いる倍率","u":"valuation multiple","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"control premium","b":"支配プレミアム","m":"経営支配権取得に伴う上乗せ","u":"control premium","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"synergy value","b":"シナジー価値","m":"統合で生まれる追加価値","u":"synergy value","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"accretion/dilution","b":"増益/希薄化分析","m":"買収がEPSに与える影響分析","u":"accretion/dilution analysis","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"sum-of-the-parts","b":"事業別合算評価","m":"事業ごとに評価し合算。SOTP","u":"SOTP valuation","p":"C","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"LBO","b":"レバレッジド・バイアウト","m":"負債を活用した買収","u":"LBO model","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"IRR","b":"内部収益率","m":"投資の年率リターン","u":"target IRR","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"MOIC","b":"投資倍率","m":"投下資本に対する回収倍率","u":"MOIC / money multiple","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"sensitivity analysis","b":"感応度分析","m":"前提変化に対する結果の変動分析","u":"sensitivity table","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Tax","f":"tax structuring","b":"税務ストラクチャリング","m":"税負担を最適化する取引設計","u":"tax-efficient structuring","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Tax","f":"share deal","b":"株式取得","m":"株式を買う取引形態","u":"share deal vs asset deal","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Tax","f":"asset deal","b":"事業（資産）取得","m":"資産・負債を個別に買う形態","u":"asset purchase","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Tax","f":"step-up","b":"基礎価額の引上げ","m":"資産の税務簿価を時価に引上げ","u":"step-up in basis","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Tax","f":"tax basis","b":"税務簿価","m":"資産の税務上の取得原価","u":"tax basis of assets","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Tax","f":"inside basis","b":"内部簿価","m":"会社が持つ資産の税務簿価","u":"inside basis","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Tax","f":"outside basis","b":"外部簿価","m":"株主が持つ株式の税務簿価","u":"outside basis","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Tax","f":"carryover basis","b":"引継ぎ簿価","m":"株式取得で簿価を引き継ぐ扱い","u":"carryover basis","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Tax","f":"338(h)(10) election","b":"338(h)(10)選択","m":"株式取得を税務上資産取得扱いにする選択（買い手が法人・売り手同意が要件、対象は米国法人）","u":"make a 338(h)(10) election","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Tax","f":"336(e) election","b":"336(e)選択","m":"338(h)(10)類似だが非法人買い手も可能な選択","u":"336(e) election","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Tax","f":"338(g) election","b":"338(g)選択","m":"外国対象会社に適用しうる単独選択","u":"338(g) election","p":"C","dir":"en2ja"},{"d":"M&A専門用語","c":"Tax","f":"gross-up","b":"グロスアップ","m":"選択で売り手が負う追加税を買い手が補填する調整","u":"tax gross-up","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Tax","f":"Form 8023","b":"様式8023","m":"338選択の届出様式","u":"file Form 8023","p":"C","dir":"en2ja"},{"d":"M&A専門用語","c":"Tax","f":"QSP","b":"適格株式購入","m":"338選択の要件となる株式取得。Qualified Stock Purchase","u":"QSP","p":"C","dir":"en2ja"},{"d":"M&A専門用語","c":"Tax","f":"QSD","b":"適格株式処分","m":"336(e)の要件。Qualified Stock Disposition","u":"QSD","p":"C","dir":"en2ja"},{"d":"M&A専門用語","c":"Tax","f":"net operating loss","b":"繰越欠損金","m":"将来所得と相殺できる税務上の損失。NOL","u":"NOL carryforward","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Tax","f":"Section 382","b":"382条制限","m":"支配権変更後のNOL利用を制限する規定","u":"Section 382 limitation","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Tax","f":"NOL limitation","b":"欠損金利用制限","m":"買収後の欠損金使用の制約","u":"NOL limitation","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Tax","f":"tax attributes","b":"税務属性","m":"NOL・税額控除等の承継可能な属性","u":"preservation of tax attributes","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Tax","f":"federal income tax","b":"連邦法人所得税","m":"米国連邦の法人所得課税","u":"federal income tax","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Tax","f":"state income tax","b":"州法人所得税","m":"各州の法人所得課税","u":"state income tax","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Tax","f":"sales and use tax","b":"売上・使用税","m":"米国の物品・サービスへの取引課税","u":"sales & use tax exposure","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Tax","f":"franchise tax","b":"フランチャイズ税","m":"州が課す事業存続・資本課税","u":"state franchise tax","p":"C","dir":"en2ja"},{"d":"M&A専門用語","c":"Tax","f":"payroll tax","b":"給与税","m":"給与に課される社会保険等の税","u":"payroll tax liabilities","p":"C","dir":"en2ja"},{"d":"M&A専門用語","c":"Tax","f":"withholding tax","b":"源泉徴収税","m":"支払時に源泉徴収する税","u":"withholding tax","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Tax","f":"nexus","b":"ネクサス","m":"課税権が及ぶ州との結びつき","u":"state tax nexus","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Tax","f":"economic nexus","b":"経済的ネクサス","m":"物理的拠点なしでも生じる課税基準","u":"economic nexus","p":"C","dir":"en2ja"},{"d":"M&A専門用語","c":"Tax","f":"transfer pricing","b":"移転価格","m":"関連者間取引の価格設定と課税","u":"transfer pricing policy","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Tax","f":"permanent establishment","b":"恒久的施設","m":"課税根拠となる事業拠点。PE","u":"PE risk","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Tax","f":"tax treaty","b":"租税条約","m":"二重課税を調整する国家間条約","u":"treaty benefits","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Tax","f":"double taxation","b":"二重課税","m":"同一所得への複数国課税","u":"avoid double taxation","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Tax","f":"repatriation","b":"資金還流","m":"海外子会社利益の本国送金","u":"cash repatriation","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Tax","f":"withholding on dividends","b":"配当源泉税","m":"配当支払時の源泉課税","u":"dividend withholding","p":"C","dir":"en2ja"},{"d":"M&A専門用語","c":"Tax","f":"tax due diligence","b":"税務DD","m":"対象会社の税務リスク調査","u":"tax DD findings","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Tax","f":"tax exposure","b":"税務エクスポージャー","m":"潜在的な追徴・課税リスク","u":"identified tax exposure","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Tax","f":"uncertain tax position","b":"不確実な税務ポジション","m":"認否不確実な税務処理。UTP","u":"uncertain tax positions","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Tax","f":"tax indemnity","b":"税務補償","m":"税務リスクに対する売り手補償","u":"tax indemnity / covenant","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Tax","f":"tax covenant","b":"税務コベナンツ","m":"税務事項の特別補償約定","u":"tax covenant","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Tax","f":"pre-closing tax","b":"クロージング前税務","m":"実行前期間に帰属する税負担","u":"pre-closing tax liabilities","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Tax","f":"tax insurance","b":"税務保険","m":"特定税務リスクを移転する保険","u":"tax liability insurance","p":"C","dir":"en2ja"},{"d":"M&A専門用語","c":"HR / Labor","f":"headcount","b":"従業員数","m":"雇用者の人数","u":"headcount analysis","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"HR / Labor","f":"full-time equivalent","b":"常勤換算","m":"労働量を常勤者数に換算した指標。FTE","u":"FTE","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"HR / Labor","f":"key employees","b":"重要従業員","m":"事業継続に不可欠な人材","u":"key employee retention","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"HR / Labor","f":"org chart","b":"組織図","m":"組織の構成を示す図","u":"organizational chart","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"HR / Labor","f":"compensation","b":"報酬","m":"給与・賞与等の対価","u":"compensation structure","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"HR / Labor","f":"benefits","b":"福利厚生","m":"給与以外の従業員給付","u":"employee benefits","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"HR / Labor","f":"severance","b":"退職金・解雇手当","m":"雇用終了時の支払","u":"severance liability","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"HR / Labor","f":"bonus plan","b":"賞与制度","m":"業績連動等の賞与の仕組み","u":"annual bonus plan","p":"C","dir":"en2ja"},{"d":"M&A専門用語","c":"HR / Labor","f":"equity incentive","b":"株式報酬","m":"株式・オプション等の誘因報酬","u":"equity incentive plan","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"HR / Labor","f":"change-in-control payment","b":"支配権変更手当","m":"CoC時に生じる支払。ゴールデンパラシュート等","u":"CoC payments","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"HR / Labor","f":"golden parachute","b":"ゴールデンパラシュート","m":"買収時に経営陣へ支払う高額手当","u":"golden parachute","p":"C","dir":"en2ja"},{"d":"M&A専門用語","c":"HR / Labor","f":"pension","b":"年金","m":"退職給付制度","u":"pension obligations","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"HR / Labor","f":"defined benefit","b":"確定給付","m":"給付額が確定した年金。DB","u":"DB plan","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"HR / Labor","f":"defined contribution","b":"確定拠出","m":"拠出額が確定した年金。DC","u":"DC plan","p":"C","dir":"en2ja"},{"d":"M&A専門用語","c":"HR / Labor","f":"pension underfunding","b":"年金積立不足","m":"年金債務に対する資産不足","u":"underfunded pension","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"HR / Labor","f":"employment agreement","b":"雇用契約","m":"従業員との個別労働契約","u":"employment agreements","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"HR / Labor","f":"collective bargaining","b":"団体交渉","m":"労組との労働条件交渉","u":"collective bargaining agreement","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"HR / Labor","f":"union","b":"労働組合","m":"従業員が組織する団体","u":"unionized workforce","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"HR / Labor","f":"works council","b":"従業員代表委員会","m":"欧州等の従業員協議機関","u":"works council consultation","p":"C","dir":"en2ja"},{"d":"M&A専門用語","c":"HR / Labor","f":"labor dispute","b":"労働争議","m":"労使間の紛争","u":"pending labor disputes","p":"C","dir":"en2ja"},{"d":"M&A専門用語","c":"HR / Labor","f":"retention plan","b":"リテンション計画","m":"人材引留めのための施策","u":"retention bonus","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"HR / Labor","f":"key person risk","b":"キーパーソンリスク","m":"特定人材依存の事業リスク","u":"key person dependency","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"HR / Labor","f":"non-compete (employee)","b":"従業員競業避止","m":"退職者の競業を制限する約定","u":"employee non-compete","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"HR / Labor","f":"cultural fit","b":"文化的適合","m":"組織文化の相性","u":"cultural integration","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"HR / Labor","f":"transition services","b":"移行支援（人事）","m":"統合期の人事支援","u":"HR transition support","p":"C","dir":"en2ja"},{"d":"M&A専門用語","c":"Commercial / Ops","f":"commercial due diligence","b":"事業DD","m":"市場・競争力の調査。CDD","u":"commercial DD","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Commercial / Ops","f":"market sizing","b":"市場規模推計","m":"対象市場の規模の測定","u":"market sizing analysis","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Commercial / Ops","f":"TAM","b":"獲得可能な総市場","m":"Total Addressable Market","u":"TAM/SAM/SOM","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Commercial / Ops","f":"market share","b":"市場シェア","m":"市場に占める売上割合","u":"market share position","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Commercial / Ops","f":"competitive landscape","b":"競争環境","m":"競合の全体状況","u":"competitive landscape","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Commercial / Ops","f":"value proposition","b":"提供価値","m":"顧客に対する価値の提案","u":"value proposition","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Commercial / Ops","f":"moat","b":"参入障壁（優位性）","m":"持続的競争優位。堀","u":"economic moat","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Commercial / Ops","f":"competitive advantage","b":"競争優位","m":"競合に対する優位性","u":"sustainable advantage","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Commercial / Ops","f":"pricing power","b":"価格決定力","m":"価格を維持・引上げできる力","u":"pricing power","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Commercial / Ops","f":"customer relationship","b":"顧客関係","m":"顧客との取引・関係性","u":"customer relationships","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Commercial / Ops","f":"distribution channel","b":"販売チャネル","m":"製品が顧客に届く経路","u":"distribution channels","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Commercial / Ops","f":"go-to-market","b":"市場投入戦略","m":"製品を市場に出す戦略。GTM","u":"GTM strategy","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Commercial / Ops","f":"operational due diligence","b":"オペレーションDD","m":"業務・供給体制の調査。ODD","u":"operational DD","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Commercial / Ops","f":"supply chain","b":"サプライチェーン","m":"調達から供給までの連鎖","u":"supply chain risk","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Commercial / Ops","f":"supplier concentration","b":"仕入先集中","m":"少数供給者への依存","u":"supplier concentration","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Commercial / Ops","f":"capacity utilization","b":"稼働率","m":"生産能力の利用度合い","u":"capacity utilization","p":"C","dir":"en2ja"},{"d":"M&A専門用語","c":"Commercial / Ops","f":"procurement","b":"調達","m":"資材・サービスの購買","u":"procurement savings","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Commercial / Ops","f":"logistics","b":"物流","m":"輸送・保管の体制","u":"logistics network","p":"C","dir":"en2ja"},{"d":"M&A専門用語","c":"Commercial / Ops","f":"footprint","b":"拠点網","m":"事業所・工場等の配置","u":"operational footprint","p":"C","dir":"en2ja"},{"d":"M&A専門用語","c":"Commercial / Ops","f":"bottleneck","b":"ボトルネック","m":"処理能力を制約する箇所","u":"operational bottleneck","p":"C","dir":"en2ja"},{"d":"M&A専門用語","c":"Commercial / Ops","f":"IT due diligence","b":"IT DD","m":"ITシステムの調査","u":"IT DD","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Commercial / Ops","f":"legacy system","b":"レガシーシステム","m":"老朽化した基幹システム","u":"legacy IT systems","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Commercial / Ops","f":"ERP","b":"基幹業務システム","m":"Enterprise Resource Planning","u":"ERP migration","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Commercial / Ops","f":"tech stack","b":"技術スタック","m":"利用技術の構成","u":"technology stack","p":"C","dir":"en2ja"},{"d":"M&A専門用語","c":"Commercial / Ops","f":"technical debt","b":"技術的負債","m":"将来の改修負担となる設計負債","u":"technical debt","p":"C","dir":"en2ja"},{"d":"M&A専門用語","c":"Commercial / Ops","f":"scalability","b":"拡張性","m":"規模拡大への対応力","u":"system scalability","p":"C","dir":"en2ja"},{"d":"M&A専門用語","c":"Commercial / Ops","f":"cybersecurity","b":"サイバーセキュリティ","m":"情報システムの安全性","u":"cybersecurity posture","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Commercial / Ops","f":"data breach","b":"情報漏洩","m":"データの不正流出","u":"data breach history","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Commercial / Ops","f":"cyber risk","b":"サイバーリスク","m":"サイバー攻撃等のリスク","u":"cyber risk assessment","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Commercial / Ops","f":"ESG due diligence","b":"ESG DD","m":"環境・社会・ガバナンスの調査","u":"ESG DD","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Commercial / Ops","f":"environmental liability","b":"環境債務","m":"汚染浄化等の潜在債務","u":"environmental liabilities","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Commercial / Ops","f":"remediation","b":"浄化・是正","m":"汚染や不備の是正措置","u":"site remediation","p":"C","dir":"en2ja"},{"d":"M&A専門用語","c":"Commercial / Ops","f":"carbon footprint","b":"カーボンフットプリント","m":"温室効果ガス排出量","u":"carbon footprint","p":"C","dir":"en2ja"},{"d":"M&A専門用語","c":"Commercial / Ops","f":"insurance coverage","b":"保険付保状況","m":"付保されている保険の範囲","u":"insurance coverage review","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Commercial / Ops","f":"D&O insurance","b":"役員賠償責任保険","m":"役員の賠償責任を補償する保険","u":"D&O insurance","p":"C","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"definitive agreement","b":"確定契約","m":"法的拘束力を持つ最終契約","u":"definitive agreement","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"SPA","b":"株式譲渡契約","m":"Share Purchase Agreement","u":"execute the SPA","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"APA","b":"事業譲渡契約","m":"Asset Purchase Agreement","u":"APA terms","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"merger agreement","b":"合併契約","m":"合併の条件を定める契約","u":"merger agreement","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"LOI","b":"基本合意書","m":"Letter of Intent。主要条件の合意","u":"non-binding LOI","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"term sheet","b":"タームシート","m":"主要条件を要約した書面","u":"term sheet","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"MOU","b":"覚書","m":"Memorandum of Understanding","u":"MOU","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"disclosure schedule","b":"開示別紙","m":"表明保証の例外を列挙する別紙","u":"disclosure schedules","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"representations and warranties","b":"表明保証","m":"事実の表明と保証。R&W/reps","u":"reps and warranties","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"fundamental representations","b":"基本的表明保証","m":"権原・権限等の中核的表明","u":"fundamental reps","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"business representations","b":"事業表明保証","m":"財務・事業に関する表明","u":"business reps","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"bring-down","b":"ブリングダウン","m":"クロージング時に表明を再確認する仕組み","u":"bring-down of reps","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"materiality qualifier","b":"重要性限定","m":"重要な事項に表明範囲を限定する語","u":"materiality qualifier","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"material adverse effect","b":"重大な悪影響","m":"対象に重大な悪影響を及ぼす事象。MAE","u":"MAE clause","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"MAC clause","b":"重大な悪影響条項","m":"Material Adverse Change条項","u":"MAC / MAE","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"knowledge qualifier","b":"認識限定","m":"「知る限り」で表明範囲を限定する語","u":"to seller's knowledge","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"seller's knowledge","b":"売り手の認識","m":"認識限定の基準となる知識","u":"seller's knowledge standard","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"non-reliance","b":"非依拠","m":"開示外情報に依拠しない旨の合意","u":"non-reliance clause","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"sandbagging","b":"サンドバッギング","m":"既知の違反でも補償請求できる扱い","u":"pro-sandbagging clause","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"covenant","b":"誓約事項","m":"当事者が守るべき約束","u":"interim covenants","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"interim covenant","b":"中間期間誓約","m":"署名〜実行間の遵守事項","u":"interim operating covenants","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"ordinary course","b":"通常の事業運営","m":"従来どおりの事業運営義務","u":"ordinary course of business","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"negative covenant","b":"禁止的誓約","m":"一定行為を控える約束","u":"negative covenants","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"affirmative covenant","b":"積極的誓約","m":"一定行為を行う約束","u":"affirmative covenants","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"reasonable best efforts","b":"合理的最善努力","m":"結果ではなく最善の努力を尽くす義務","u":"reasonable best efforts","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"efforts standard","b":"努力基準","m":"努力義務の水準を定める基準","u":"efforts standard","p":"C","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"indemnification","b":"補償","m":"違反等の損害を相手に補償する仕組み","u":"indemnification obligations","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"indemnity cap","b":"補償上限","m":"補償責任の総額上限","u":"liability cap","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"liability cap","b":"責任上限","m":"補償の最大負担額","u":"overall cap","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"basket","b":"バスケット","m":"補償請求が発生する損害の下限","u":"indemnity basket","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"tipping basket","b":"ティッピングバスケット","m":"閾値超過で全額補償される方式","u":"tipping basket","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"deductible basket","b":"控除方式バスケット","m":"閾値超過分のみ補償する方式","u":"deductible / true deductible","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"de minimis","b":"デミニミス","m":"個別請求の最低金額","u":"de minimis threshold","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"survival period","b":"存続期間","m":"表明保証・補償が有効な期間","u":"survival of reps","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"escrow","b":"エスクロー","m":"補償等に備え第三者が預かる資金","u":"escrow account","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"holdback","b":"ホールドバック","m":"対価の一部を留保する仕組み","u":"purchase price holdback","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"set-off","b":"相殺","m":"補償額を支払額から差し引く処理","u":"right of set-off","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"exclusive remedy","b":"唯一の救済","m":"補償を唯一の救済手段とする定め","u":"exclusive remedy clause","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"specific indemnity","b":"個別補償","m":"特定リスクへの限定的補償","u":"special / specific indemnity","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"RWI","b":"表明保証保険","m":"違反リスクを移転する保険。R&W insurance","u":"rep and warranty insurance","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"retention (RWI)","b":"免責金額（保険）","m":"RWIで自己負担となる金額","u":"policy retention","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"purchase price","b":"買収価格","m":"取引の対価","u":"aggregate purchase price","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"purchase price adjustment","b":"価格調整","m":"実行時実績に基づく対価の調整。PPA","u":"purchase price adjustment","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"completion accounts","b":"完了時計算書","m":"実行後に確定する精算用計算書","u":"completion accounts mechanism","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"locked box","b":"ロックボックス","m":"基準日で価格を固定する方式","u":"locked-box mechanism","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"locked-box date","b":"ロックボックス基準日","m":"価格固定の基準となる日","u":"locked-box date","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"leakage","b":"リーケージ","m":"基準日後の売り手への価値流出","u":"permitted leakage","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"permitted leakage","b":"許容リーケージ","m":"例外的に許される価値流出","u":"permitted leakage items","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"earn-out","b":"アーンアウト","m":"将来業績に連動する追加対価","u":"earn-out arrangement","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"contingent consideration","b":"条件付対価","m":"一定条件成就で払う対価","u":"contingent consideration","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"deferred consideration","b":"繰延対価","m":"将来に支払う対価","u":"deferred payment","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"rollover equity","b":"ロールオーバー出資","m":"売り手が新体制に再出資する持分","u":"rollover equity","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"vendor loan","b":"ベンダーローン","m":"売り手が買い手に供与する融資","u":"vendor loan note","p":"C","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"funds flow","b":"資金フロー表","m":"クロージング時の資金の動きの一覧","u":"funds flow statement","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"conditions precedent","b":"前提条件","m":"クロージングの前提となる条件。CP","u":"conditions precedent","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"closing conditions","b":"クロージング条件","m":"実行に必要な充足条件","u":"closing conditions","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"regulatory approval","b":"規制当局承認","m":"当局の承認取得","u":"regulatory approvals","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"antitrust clearance","b":"独禁法クリアランス","m":"競争法上の承認","u":"antitrust clearance","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"long-stop date","b":"最終期限","m":"条件未充足時に解除できる期限","u":"long-stop / drop-dead date","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"walk-away right","b":"解約権","m":"一定事由で取引を離脱する権利","u":"walk-away right","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"termination rights","b":"解除権","m":"契約を終了できる権利","u":"termination provisions","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"break fee","b":"ブレークフィー","m":"破談時に支払う違約金","u":"break-up fee","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"reverse break fee","b":"リバースブレークフィー","m":"買い手都合の破談時に払う違約金","u":"reverse termination fee","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"specific performance","b":"特定履行","m":"契約履行を強制する救済","u":"specific performance","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"governing law","b":"準拠法","m":"契約を規律する法","u":"governing law clause","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"jurisdiction","b":"裁判管轄","m":"紛争を扱う裁判所","u":"exclusive jurisdiction","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"arbitration","b":"仲裁","m":"裁判外の紛争解決手続","u":"arbitration clause","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"dispute resolution","b":"紛争解決","m":"紛争処理の方法の定め","u":"dispute resolution","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"entire agreement","b":"完全合意","m":"本契約が全ての合意である旨","u":"entire agreement clause","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"confidentiality (SPA)","b":"秘密保持（契約）","m":"契約情報の秘密保持","u":"confidentiality provisions","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"force majeure","b":"不可抗力","m":"当事者の責によらない履行不能","u":"force majeure clause","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"consequential damages","b":"結果損害","m":"違反から派生する間接損害","u":"exclude consequential damages","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"lost profits","b":"逸失利益","m":"得られたはずの利益の損失","u":"lost profits","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"direct damages","b":"直接損害","m":"違反から直接生じる損害","u":"direct damages","p":"C","dir":"en2ja"},{"d":"M&A専門用語","c":"SPA / Negotiation","f":"mitigation","b":"損害軽減義務","m":"損害拡大を防ぐ義務","u":"duty to mitigate","p":"C","dir":"en2ja"},{"d":"M&A専門用語","c":"Financing / Regulatory","f":"acquisition financing","b":"買収ファイナンス","m":"買収資金の調達","u":"acquisition financing","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Financing / Regulatory","f":"debt financing","b":"デットファイナンス","m":"借入による資金調達","u":"debt financing package","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Financing / Regulatory","f":"equity financing","b":"エクイティファイナンス","m":"出資による資金調達","u":"equity contribution","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Financing / Regulatory","f":"leverage","b":"レバレッジ","m":"負債活用の度合い","u":"leverage ratio","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Financing / Regulatory","f":"senior debt","b":"シニア債務","m":"返済順位が高い借入","u":"senior secured debt","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financing / Regulatory","f":"mezzanine","b":"メザニン","m":"シニアとエクイティの中間的資金","u":"mezzanine financing","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financing / Regulatory","f":"term loan","b":"タームローン","m":"期限付きの借入","u":"term loan A/B","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financing / Regulatory","f":"revolving credit","b":"リボルビング融資","m":"反復利用できる融資枠。RCF","u":"revolving credit facility","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financing / Regulatory","f":"bridge loan","b":"ブリッジローン","m":"恒久調達までのつなぎ融資","u":"bridge financing","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financing / Regulatory","f":"commitment letter","b":"コミットメントレター","m":"融資提供を約する書面","u":"financing commitment","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financing / Regulatory","f":"debt covenant","b":"財務制限条項","m":"借入に付随する遵守条件","u":"financial covenants","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financing / Regulatory","f":"leverage ratio","b":"レバレッジ比率","m":"純有利子負債÷EBITDA等","u":"net leverage ratio","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financing / Regulatory","f":"debt capacity","b":"債務許容量","m":"追加で負担しうる負債の余地","u":"debt capacity","p":"C","dir":"en2ja"},{"d":"M&A専門用語","c":"Financing / Regulatory","f":"financing condition","b":"融資条件","m":"資金調達に関する取引条件","u":"financing-out","p":"C","dir":"en2ja"},{"d":"M&A専門用語","c":"Financing / Regulatory","f":"antitrust","b":"独占禁止法","m":"競争を保護する法規制","u":"antitrust review","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Financing / Regulatory","f":"merger control","b":"企業結合規制","m":"M&Aに対する競争当局審査","u":"merger control filing","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Financing / Regulatory","f":"HSR filing","b":"HSR届出","m":"米国の企業結合事前届出。2025年基準で取引規模$126.4M超が目安","u":"HSR filing / notification","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Financing / Regulatory","f":"waiting period","b":"待機期間","m":"届出後実行を控える期間（HSRは通常30日）","u":"30-day waiting period","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financing / Regulatory","f":"second request","b":"二次調査要請","m":"当局による追加情報要求。審査長期化の要因","u":"second request","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financing / Regulatory","f":"FTC","b":"連邦取引委員会","m":"米国の競争・消費者保護当局","u":"FTC review","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financing / Regulatory","f":"DOJ","b":"米国司法省","m":"反トラスト執行を担う当局","u":"DOJ Antitrust Division","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financing / Regulatory","f":"gun-jumping","b":"ガンジャンピング","m":"承認前の統合的行為。制裁対象","u":"gun-jumping risk","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financing / Regulatory","f":"remedy (antitrust)","b":"是正措置","m":"承認条件としての事業売却等","u":"structural remedies / divestiture","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financing / Regulatory","f":"clearance","b":"クリアランス","m":"当局からの承認取得","u":"obtain clearance","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Financing / Regulatory","f":"CFIUS","b":"対米外国投資委員会","m":"米国の安全保障投資審査。金額基準なし","u":"CFIUS review","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Financing / Regulatory","f":"national security review","b":"安全保障審査","m":"外資規制の観点からの審査","u":"national security review","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Financing / Regulatory","f":"foreign investment screening","b":"外国投資審査","m":"対内投資の審査制度","u":"FDI screening","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financing / Regulatory","f":"mitigation agreement","b":"緩和措置合意","m":"安全保障懸念を和らげる合意","u":"CFIUS mitigation","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financing / Regulatory","f":"mandatory filing","b":"強制届出","m":"一定要件で必須となる届出","u":"mandatory CFIUS filing","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financing / Regulatory","f":"outbound investment","b":"対外投資規制","m":"特定国向け投資の制限（2025年〜運用）","u":"outbound investment rules","p":"C","dir":"en2ja"},{"d":"M&A専門用語","c":"Financing / Regulatory","f":"industry regulator","b":"業界規制当局","m":"業種別の監督当局","u":"sector regulator approval","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financing / Regulatory","f":"foreign ownership limit","b":"外資規制","m":"外資保有比率の上限規制","u":"foreign ownership restriction","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financing / Regulatory","f":"licensing approval","b":"許認可","m":"事業に必要な免許の承認","u":"license transfer approval","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financing / Regulatory","f":"condition to closing (reg)","b":"規制上の実行条件","m":"規制承認を条件とする定め","u":"regulatory condition","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financing / Regulatory","f":"hell-or-high-water","b":"ヘルオアハイウォーター","m":"承認取得に無条件で努力する義務","u":"hell-or-high-water clause","p":"C","dir":"en2ja"},{"d":"M&A専門用語","c":"PMI / Carve-out","f":"post-merger integration","b":"統合プロセス","m":"買収後の統合。PMI","u":"PMI planning","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"PMI / Carve-out","f":"integration plan","b":"統合計画","m":"統合の全体計画","u":"integration roadmap","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"PMI / Carve-out","f":"Day 1","b":"デイワン","m":"クロージング当日・直後の初動","u":"Day 1 readiness","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"PMI / Carve-out","f":"100-day plan","b":"100日計画","m":"統合初期の重点行動計画","u":"first 100 days","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"PMI / Carve-out","f":"integration management office","b":"統合管理事務局","m":"統合を統括する組織。IMO","u":"IMO","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"PMI / Carve-out","f":"workstream","b":"ワークストリーム","m":"統合作業の機能別チーム","u":"integration workstreams","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"PMI / Carve-out","f":"integration lead","b":"統合責任者","m":"統合を主導する担当者","u":"integration lead","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"PMI / Carve-out","f":"quick win","b":"クイックウィン","m":"早期に実現する成果","u":"quick wins","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"PMI / Carve-out","f":"synergy","b":"シナジー","m":"統合による相乗効果","u":"synergy realization","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"PMI / Carve-out","f":"cost synergy","b":"コストシナジー","m":"費用削減による効果","u":"cost synergies","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"PMI / Carve-out","f":"revenue synergy","b":"レベニューシナジー","m":"売上増による効果","u":"revenue synergies","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"PMI / Carve-out","f":"synergy capture","b":"シナジー実現","m":"計画したシナジーの実際の獲得","u":"synergy capture","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"PMI / Carve-out","f":"dis-synergy","b":"ディスシナジー","m":"統合で生じる負の効果","u":"dis-synergies","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"PMI / Carve-out","f":"one-time cost","b":"一時的統合費用","m":"統合実現に要する一時費用","u":"cost to achieve","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"PMI / Carve-out","f":"cost to achieve","b":"実現コスト","m":"シナジー実現に必要な投資額","u":"cost-to-achieve (CTA)","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"PMI / Carve-out","f":"run-rate synergy","b":"ランレートシナジー","m":"年換算での定常的シナジー","u":"run-rate synergies","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"PMI / Carve-out","f":"carve-out","b":"カーブアウト","m":"事業の一部を切り出す取引","u":"carve-out transaction","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"PMI / Carve-out","f":"separation","b":"分離","m":"対象事業を親から切り離す作業","u":"business separation","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"PMI / Carve-out","f":"standalone","b":"スタンドアロン","m":"独立して機能する状態","u":"standalone basis","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"PMI / Carve-out","f":"standalone cost","b":"スタンドアロンコスト","m":"独立運営に要する費用","u":"standalone costs","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"PMI / Carve-out","f":"stranded cost","b":"取り残しコスト","m":"事業分離後に親に残る費用","u":"stranded costs","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"PMI / Carve-out","f":"carve-out financials","b":"カーブアウト財務","m":"切出事業単体の財務諸表","u":"carve-out financial statements","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"PMI / Carve-out","f":"perimeter","b":"対象範囲","m":"切り出す事業の境界","u":"deal perimeter","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"PMI / Carve-out","f":"shared services","b":"シェアードサービス","m":"グループ共通の間接機能","u":"shared service functions","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"PMI / Carve-out","f":"separation cost","b":"分離コスト","m":"分離実行に要する費用","u":"separation costs","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"PMI / Carve-out","f":"TSA","b":"移行サービス契約","m":"Transitional Services Agreement","u":"TSA scope","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"PMI / Carve-out","f":"transitional services","b":"移行サービス","m":"分離後に売り手が一時提供する役務","u":"transitional services","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"PMI / Carve-out","f":"TSA exit","b":"TSA離脱","m":"移行サービスからの卒業","u":"TSA exit plan","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"PMI / Carve-out","f":"reverse TSA","b":"リバースTSA","m":"買い手が売り手に提供する移行役務","u":"reverse TSA","p":"C","dir":"en2ja"},{"d":"M&A専門用語","c":"PMI / Carve-out","f":"value creation plan","b":"価値創造計画","m":"買収後の価値向上計画。VCP","u":"value creation plan","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"PMI / Carve-out","f":"operational improvement","b":"業務改善","m":"オペレーション面の改善施策","u":"operational improvements","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"PMI / Carve-out","f":"margin expansion","b":"利益率改善","m":"利益率を高める取組み","u":"margin expansion","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"PMI / Carve-out","f":"bolt-on (post-deal)","b":"追加買収（統合後）","m":"統合後に重ねる補完買収","u":"follow-on bolt-ons","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"PMI / Carve-out","f":"exit strategy","b":"出口戦略","m":"将来の売却・上場の方針","u":"exit planning","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"PMI / Carve-out","f":"value bridge","b":"バリューブリッジ","m":"投資リターンの要因分解","u":"value creation bridge","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"merger","b":"合併","m":"2社が1つになる取引","u":"statutory merger","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"acquisition","b":"買収","m":"過半数株式等を取得する取引","u":"acquisition of control","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"consolidation","b":"新設合併","m":"複数社が新会社に統合","u":"amalgamation / consolidation","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"horizontal integration","b":"水平統合","m":"同業種との統合","u":"horizontal merger","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"vertical integration","b":"垂直統合","m":"供給網上の企業との統合","u":"vertical integration","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"conglomerate merger","b":"コングロマリット型","m":"無関連事業との合併","u":"conglomerate deal","p":"C","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"tender offer","b":"公開買付け","m":"株主から直接株式を買い付ける","u":"launch a tender offer","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"friendly takeover","b":"友好的買収","m":"対象経営陣が賛同する買収","u":"friendly deal","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"hostile takeover","b":"敵対的買収","m":"対象経営陣が反対する買収","u":"hostile bid","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"M&A Process","f":"toehold","b":"足がかり持分","m":"事前に取得する少数持分","u":"toehold position","p":"C","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"poison pill","b":"ポイズンピル","m":"買収を困難にする防衛策","u":"shareholder rights plan","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"white knight","b":"ホワイトナイト","m":"友好的な対抗買収者","u":"white knight defense","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"crown jewels","b":"クラウンジュエル","m":"中核資産の売却による防衛","u":"crown jewels defense","p":"C","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"golden parachute (defense)","b":"ゴールデンパラシュート","m":"経営陣への高額退職手当による防衛","u":"golden parachute","p":"C","dir":"en2ja"},{"d":"M&A専門用語","c":"Corporate & Legal","f":"greenmail","b":"グリーンメール","m":"プレミアムでの自社株買戻し","u":"greenmail","p":"C","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"accretion","b":"増益効果","m":"1株当たり指標の改善","u":"accretive deal","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"dilution","b":"希薄化","m":"1株当たり指標の悪化","u":"dilutive deal","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"purchase price allocation","b":"取得価額配分","m":"対価を資産とのれんに配分。PPA","u":"purchase price allocation","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"takeover premium","b":"買収プレミアム","m":"市場株価への上乗せ幅","u":"control / takeover premium","p":"A","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"exchange ratio","b":"株式交換比率","m":"株式対価での交換比率","u":"share exchange ratio","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"economies of scale","b":"規模の経済","m":"規模拡大による単位コスト低下","u":"economies of scale","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"economies of scope","b":"範囲の経済","m":"事業範囲拡大による効率","u":"economies of scope","p":"C","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"cash consideration","b":"現金対価","m":"対価を現金で支払う部分","u":"cash consideration","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"stock consideration","b":"株式対価","m":"対価を自社株で支払う部分","u":"stock consideration","p":"B","dir":"en2ja"},{"d":"M&A専門用語","c":"Financial / FDD","f":"mixed consideration","b":"混合対価","m":"現金と株式の組合せ","u":"cash-and-stock deal","p":"B","dir":"en2ja"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"活用する","b":"leverage (v.)","m":"資源・強みを活かす。ビジネスで多用","u":"leverage our network","p":"A","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"目線を合わせる","b":"align","m":"認識・方針を一致させる","u":"align on next steps","p":"A","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"後で戻る","b":"circle back","m":"この件は改めて話す","u":"circle back on this","p":"A","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"一度連絡する","b":"touch base","m":"短く連絡を取り合う","u":"touch base next week","p":"A","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"巻き込む","b":"loop in","m":"関係者を会話に加える","u":"loop in legal","p":"A","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"別途話す","b":"take offline","m":"この場でなく個別に議論する","u":"take this offline","p":"A","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"概算","b":"ballpark","m":"おおよその数字","u":"a ballpark figure","p":"B","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"深掘り","b":"deep dive","m":"詳細に分析する","u":"do a deep dive","p":"B","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"成果物","b":"deliverable","m":"提出物・アウトプット","u":"key deliverables","p":"A","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"実行可能な","b":"actionable","m":"すぐ行動に移せる","u":"actionable insights","p":"B","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"要点・持ち帰り","b":"takeaway","m":"会議等の結論","u":"key takeaways","p":"A","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"対応余力","b":"bandwidth","m":"作業できる時間的余裕","u":"I don't have bandwidth","p":"A","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"利害関係者","b":"stakeholder","m":"案件の関係当事者","u":"key stakeholders","p":"A","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"上位に上げる","b":"escalate","m":"上長・上位者に判断を仰ぐ","u":"escalate the issue","p":"B","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"反論する","b":"push back","m":"異議・抵抗を示す","u":"push back on the terms","p":"B","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"強化する","b":"ramp up","m":"規模・活動を増やす","u":"ramp up the process","p":"B","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"効率化する","b":"streamline","m":"無駄を省き合理化する","u":"streamline operations","p":"B","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"詳細な","b":"granular","m":"粒度の細かい","u":"granular detail","p":"B","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"概要の","b":"high-level","m":"大枠・俯瞰的な","u":"a high-level summary","p":"A","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"範囲","b":"scope","m":"対象の範囲。動詞で範囲設定","u":"scope of work","p":"A","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"対象外","b":"out of scope","m":"範囲に含まれない","u":"that's out of scope","p":"B","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"但し書き","b":"caveat","m":"留意すべき条件","u":"one caveat","p":"B","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"〜次第で","b":"contingent on","m":"条件に依存する","u":"contingent on approval","p":"B","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"順を追って説明する","b":"walk through","m":"段階的に説明する","u":"walk me through it","p":"A","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"指摘する","b":"flag","m":"注意喚起する","u":"flag a concern","p":"B","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"連絡する","b":"ping","m":"短く一報入れる","u":"ping me when ready","p":"B","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"終業まで","b":"EOD / COB","m":"End of Day / Close of Business","u":"by EOD today","p":"B","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"至急","b":"ASAP","m":"可能な限り早く","u":"need it ASAP","p":"A","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"参考まで","b":"FYI","m":"For Your Information","u":"FYI, see attached","p":"A","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"未定","b":"TBD","m":"To Be Determined","u":"timeline is TBD","p":"A","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"事前連絡","b":"heads-up","m":"前もっての注意喚起","u":"a quick heads-up","p":"B","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"賛同を得る","b":"get buy-in","m":"関係者の同意を取り付ける","u":"get buy-in from mgmt","p":"B","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"前提をそろえる","b":"level-set","m":"共通認識を作る","u":"let's level-set","p":"B","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"妥当性確認","b":"sanity check","m":"おかしくないか簡易確認","u":"a quick sanity check","p":"B","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"要点","b":"the bottom line","m":"結論・要するに。最終損益の意も","u":"the bottom line is","p":"A","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"引き受ける","b":"take on","m":"仕事・責任を引き受ける","u":"take on more work","p":"B","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"計算・分析する","b":"crunch the numbers","m":"数字を精査・計算する","u":"crunch the numbers","p":"B","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"決定権を持つ","b":"call the shots","m":"采配・指揮をとる","u":"who calls the shots","p":"B","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"即座に","b":"off the top of my head","m":"思いつきで・すぐに","u":"off the top of my head","p":"B","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"やり方を教える","b":"show the ropes","m":"仕事のコツを教える","u":"show you the ropes","p":"B","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"一言で言うと","b":"in a nutshell","m":"手短に要約すると","u":"in a nutshell","p":"A","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"妥協点","b":"middle ground","m":"双方が歩み寄る地点","u":"find middle ground","p":"B","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"譲歩","b":"concession","m":"交渉で譲る点","u":"make a concession","p":"B","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"落としどころ","b":"landing zone","m":"合意の着地点","u":"the landing zone","p":"B","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"前提","b":"assumption","m":"議論の出発点となる仮定","u":"key assumptions","p":"A","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"制約","b":"constraint","m":"動きを縛る条件","u":"time constraints","p":"B","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"トレードオフ","b":"trade-off","m":"一方を得れば他方を失う関係","u":"a trade-off","p":"A","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"優先順位づけ","b":"prioritize","m":"重要度で順序づける","u":"prioritize the list","p":"A","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"確定させる","b":"finalize","m":"最終決定する","u":"finalize the terms","p":"A","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"保留する","b":"put on hold","m":"一時停止する","u":"put on hold","p":"B","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"棚上げする","b":"park","m":"一旦置いておく","u":"park this for now","p":"B","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"白紙に戻す","b":"go back to the drawing board","m":"やり直す","u":"back to the drawing board","p":"B","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"現実的な","b":"realistic","m":"実現可能な","u":"a realistic timeline","p":"A","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"野心的な","b":"ambitious","m":"高い目標の","u":"an ambitious target","p":"B","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"実行","b":"execution","m":"計画を実行に移すこと","u":"flawless execution","p":"A","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"収益性","b":"profitability","m":"利益を生む度合い","u":"improve profitability","p":"A","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"黒字","b":"in the black","m":"利益が出ている状態","u":"back in the black","p":"B","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"赤字","b":"in the red","m":"損失が出ている状態","u":"in the red","p":"B","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"目標を達成する","b":"hit the numbers","m":"予算・目標を達成","u":"hit our numbers","p":"B","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"目標未達","b":"miss the mark","m":"目標を外す","u":"missed the mark","p":"B","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"基準を上げる","b":"raise the bar","m":"水準・ハードルを上げる","u":"raise the bar","p":"B","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"収益源","b":"revenue stream","m":"売上の源泉","u":"recurring revenue stream","p":"B","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"費用対効果","b":"cost-effective","m":"コストに見合う効果","u":"cost-effective solution","p":"A","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"採算が合う","b":"break even","m":"損益がゼロになる","u":"break even in year 2","p":"B","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"下振れ","b":"downside","m":"悪化・下方リスク","u":"downside risk","p":"B","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"上振れ","b":"upside","m":"改善・上方余地","u":"upside potential","p":"B","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"優先する","b":"take priority","m":"他より先に扱う","u":"this takes priority","p":"B","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"後回しにする","b":"on the back burner","m":"優先順位を下げる","u":"on the back burner","p":"B","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"締め切り","b":"deadline","m":"期限","u":"meet the deadline","p":"A","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"前倒しする","b":"move up / bring forward","m":"予定を早める","u":"move up the deadline","p":"B","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"延期する","b":"push back / postpone","m":"予定を遅らせる","u":"push back the meeting","p":"B","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"折り返す","b":"get back to","m":"後で返答する","u":"I'll get back to you","p":"A","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"確認する","b":"follow up","m":"進捗・回答を確認する","u":"follow up on the request","p":"A","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"念のため","b":"just in case","m":"万一に備えて","u":"just in case","p":"B","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"最新化する","b":"update","m":"情報を新しくする","u":"update the deck","p":"A","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"共有する","b":"share / circulate","m":"情報を回す","u":"circulate the draft","p":"A","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"順調に","b":"on track","m":"計画どおりに進む","u":"we're on track","p":"A","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"遅延","b":"behind schedule","m":"予定より遅れている","u":"behind schedule","p":"B","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"前倒しで","b":"ahead of schedule","m":"予定より早い","u":"ahead of schedule","p":"B","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"筋が通る","b":"make sense","m":"理にかなう","u":"that makes sense","p":"A","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"現実味がない","b":"not viable","m":"実行可能でない","u":"not viable","p":"B","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"実現可能な","b":"feasible","m":"実行できる","u":"is it feasible?","p":"A","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"堅実な","b":"solid","m":"しっかりした・確かな","u":"a solid plan","p":"A","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"見込みがある","b":"promising","m":"有望な","u":"a promising target","p":"B","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"懸念","b":"concern","m":"心配・問題点","u":"a key concern","p":"A","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"不透明な領域","b":"grey area","m":"どちらとも言えない領域","u":"a grey area","p":"B","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"全力を尽くす","b":"go the extra mile","m":"期待以上に努力する","u":"go the extra mile","p":"B","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"手を抜く","b":"cut corners","m":"近道して質を落とす","u":"cut corners","p":"B","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"ルール通りに","b":"by the book","m":"規則に忠実に","u":"do it by the book","p":"B","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"裏で","b":"behind the scenes","m":"陰で・目立たず","u":"behind the scenes","p":"B","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"価値をもたらす","b":"bring to the table","m":"スキル・価値を提供する","u":"what you bring to the table","p":"B","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"立ち上げる","b":"get off the ground","m":"事業を始動させる","u":"get the project off the ground","p":"B","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"軌道に乗せる","b":"get up and running","m":"稼働させる","u":"get it up and running","p":"B","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"主導する","b":"take the lead","m":"率先して進める","u":"take the lead on this","p":"A","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"任せる","b":"delegate","m":"権限を委譲する","u":"delegate the task","p":"B","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"長期的に","b":"for the long haul","m":"長期にわたって","u":"in it for the long haul","p":"B","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"コネを使う","b":"pull strings","m":"つてを使って動かす","u":"pull a few strings","p":"C","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"窮地に立つ","b":"in hot water","m":"まずい状況にある","u":"in hot water","p":"C","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"急に任される","b":"thrown in at the deep end","m":"準備なく難題を任される","u":"thrown in at the deep end","p":"C","dir":"ja2en"},{"d":"ビジネス英語","c":"頻出単語・熟語","f":"細字条項","b":"fine print","m":"契約の細かい条件","u":"read the fine print","p":"B","dir":"ja2en"},{"d":"定型フレーズ","c":"会議進行","f":"本題に入りましょう。","b":"Let's get started / Let's dive in.","m":"会議を始める","u":"","p":"A","dir":"ja2en"},{"d":"定型フレーズ","c":"会議進行","f":"まず全体像から。","b":"Let's start with the big picture.","m":"俯瞰から入る","u":"","p":"B","dir":"ja2en"},{"d":"定型フレーズ","c":"会議進行","f":"まず前提をそろえましょう。","b":"Let me level-set first.","m":"共通認識を作る","u":"","p":"B","dir":"ja2en"},{"d":"定型フレーズ","c":"会議進行","f":"今日のゴールは〜です。","b":"The goal for today is to…","m":"会議の目的を示す","u":"","p":"A","dir":"ja2en"},{"d":"定型フレーズ","c":"会議進行","f":"時間の関係で先に進みます。","b":"In the interest of time, let's move on.","m":"時間を管理する","u":"","p":"A","dir":"ja2en"},{"d":"定型フレーズ","c":"会議進行","f":"この件は個別に話しましょう。","b":"Let's take this offline.","m":"本筋から逸れた議論を切る","u":"","p":"A","dir":"ja2en"},{"d":"定型フレーズ","c":"会議進行","f":"一旦保留にしましょう。","b":"Let's park this for now.","m":"議論を後回しにする","u":"","p":"B","dir":"ja2en"},{"d":"定型フレーズ","c":"会議進行","f":"その件は一旦置いておきましょう。","b":"Let's put a pin in that.","m":"論点を中断し後で戻す","u":"","p":"B","dir":"ja2en"},{"d":"定型フレーズ","c":"会議進行","f":"次のステップの認識を合わせましょう。","b":"Let's align on the next steps.","m":"方向確認・締め","u":"","p":"A","dir":"ja2en"},{"d":"定型フレーズ","c":"会議進行","f":"認識は一致しています。","b":"We're on the same page.","m":"合意を確認する","u":"","p":"A","dir":"ja2en"},{"d":"定型フレーズ","c":"会議進行","f":"まず大枠で進めましょう。","b":"Let's keep this at a high level.","m":"詳細前に俯瞰する","u":"","p":"B","dir":"ja2en"},{"d":"定型フレーズ","c":"会議進行","f":"少し戻ってもいいですか。","b":"Can I take a step back?","m":"論点を引き戻す","u":"","p":"B","dir":"ja2en"},{"d":"定型フレーズ","c":"会議進行","f":"論点を整理させてください。","b":"Let me frame the issue.","m":"争点を明確化する","u":"","p":"B","dir":"ja2en"},{"d":"定型フレーズ","c":"会議進行","f":"結論から言うと〜です。","b":"The bottom line is…","m":"要点を先に述べる","u":"","p":"A","dir":"ja2en"},{"d":"定型フレーズ","c":"会議進行","f":"一言で言うと〜です。","b":"In a nutshell, …","m":"手短に要約する","u":"","p":"A","dir":"ja2en"},{"d":"定型フレーズ","c":"確認","f":"順を追って説明してもらえますか。","b":"Can you walk me through this?","m":"詳細説明を求める","u":"","p":"A","dir":"ja2en"},{"d":"定型フレーズ","c":"確認","f":"もう少し具体的に教えてください。","b":"Could you be more specific?","m":"具体化を求める","u":"","p":"A","dir":"ja2en"},{"d":"定型フレーズ","c":"確認","f":"例を挙げてもらえますか。","b":"Could you give me an example?","m":"例示を求める","u":"","p":"B","dir":"ja2en"},{"d":"定型フレーズ","c":"確認","f":"正しく理解しているか確認させてください。","b":"Let me make sure I understand correctly.","m":"理解を確認する","u":"","p":"A","dir":"ja2en"},{"d":"定型フレーズ","c":"確認","f":"つまり〜という理解でよいですか。","b":"So, if I understand correctly, …?","m":"要約して確認する","u":"","p":"A","dir":"ja2en"},{"d":"定型フレーズ","c":"確認","f":"念のため確認ですが〜。","b":"Just to confirm, …","m":"前提を再確認する","u":"","p":"A","dir":"ja2en"},{"d":"定型フレーズ","c":"確認","f":"補足していただけますか。","b":"Could you elaborate on that?","m":"詳細を促す","u":"","p":"B","dir":"ja2en"},{"d":"定型フレーズ","c":"確認","f":"数字の根拠を教えてください。","b":"What's the basis for this number?","m":"根拠を問う","u":"","p":"A","dir":"ja2en"},{"d":"定型フレーズ","c":"確認","f":"前提を確認させてください。","b":"Let me check the assumptions.","m":"仮定を検証する","u":"","p":"A","dir":"ja2en"},{"d":"定型フレーズ","c":"確認","f":"どこに記載がありますか。","b":"Where is this in the materials?","m":"出典を確認する","u":"","p":"B","dir":"ja2en"},{"d":"定型フレーズ","c":"意見","f":"個人的には〜だと思います。","b":"My personal view is that…","m":"意見を述べる","u":"","p":"A","dir":"ja2en"},{"d":"定型フレーズ","c":"意見","f":"率直に申し上げると〜。","b":"To be candid, …","m":"本音を伝える","u":"","p":"B","dir":"ja2en"},{"d":"定型フレーズ","c":"意見","f":"もっともなご指摘です。","b":"That's a fair point.","m":"相手を認める","u":"","p":"A","dir":"ja2en"},{"d":"定型フレーズ","c":"意見","f":"おっしゃる通りです。","b":"You have a point there.","m":"部分的に同意する","u":"","p":"B","dir":"ja2en"},{"d":"定型フレーズ","c":"意見","f":"少し違う見方もできます。","b":"There's another way to look at this.","m":"別視点を示す","u":"","p":"B","dir":"ja2en"},{"d":"定型フレーズ","c":"意見","f":"あえて反対の立場で言うと〜。","b":"Let me play devil's advocate.","m":"批判的検討を促す","u":"","p":"B","dir":"ja2en"},{"d":"定型フレーズ","c":"意見","f":"懸念が一点あります。","b":"I have one concern.","m":"懸念を提起する","u":"","p":"A","dir":"ja2en"},{"d":"定型フレーズ","c":"意見","f":"ここは慎重に進めたいです。","b":"I'd like to be cautious here.","m":"慎重姿勢を示す","u":"","p":"B","dir":"ja2en"},{"d":"定型フレーズ","c":"意見","f":"賛成しかねます。","b":"I'm not sure I agree.","m":"やんわり反対する","u":"","p":"B","dir":"ja2en"},{"d":"定型フレーズ","c":"意見","f":"原則は賛成です。ただし〜。","b":"I agree in principle, but…","m":"条件付き同意","u":"","p":"A","dir":"ja2en"},{"d":"定型フレーズ","c":"意見","f":"現時点では判断できません。","b":"I can't say at this point.","m":"判断保留","u":"","p":"B","dir":"ja2en"},{"d":"定型フレーズ","c":"意見","f":"持ち帰って検討します。","b":"Let me take it back and consider.","m":"保留し検討する","u":"","p":"A","dir":"ja2en"},{"d":"定型フレーズ","c":"交渉","f":"双方にとって良い着地点を探しましょう。","b":"Let's find a win-win.","m":"合意形成を促す","u":"","p":"A","dir":"ja2en"},{"d":"定型フレーズ","c":"交渉","f":"歩み寄れる点を探しましょう。","b":"Let's find middle ground.","m":"妥協点を探る","u":"","p":"B","dir":"ja2en"},{"d":"定型フレーズ","c":"交渉","f":"これは譲れない点です。","b":"This is a deal breaker for us.","m":"譲れない条件を示す","u":"","p":"A","dir":"ja2en"},{"d":"定型フレーズ","c":"交渉","f":"そこは柔軟に対応できます。","b":"We have some flexibility there.","m":"譲歩余地を示す","u":"","p":"B","dir":"ja2en"},{"d":"定型フレーズ","c":"交渉","f":"その条件は受け入れがたいです。","b":"That's a tough one for us.","m":"難色を示す","u":"","p":"B","dir":"ja2en"},{"d":"定型フレーズ","c":"交渉","f":"代替案を提示させてください。","b":"Let me propose an alternative.","m":"対案を出す","u":"","p":"B","dir":"ja2en"},{"d":"定型フレーズ","c":"交渉","f":"条件次第では検討可能です。","b":"We could consider it, depending on the terms.","m":"条件付きで前向き","u":"","p":"B","dir":"ja2en"},{"d":"定型フレーズ","c":"交渉","f":"どこを優先されますか。","b":"What's your priority here?","m":"相手の優先度を探る","u":"","p":"B","dir":"ja2en"},{"d":"定型フレーズ","c":"交渉","f":"期待値を調整しておきたいです。","b":"I want to manage expectations.","m":"過度な期待を防ぐ","u":"","p":"B","dir":"ja2en"},{"d":"定型フレーズ","c":"交渉","f":"一度持ち帰らせてください。","b":"Let me take this back to my team.","m":"即答を避ける","u":"","p":"A","dir":"ja2en"},{"d":"定型フレーズ","c":"交渉","f":"この点で折り合えますか。","b":"Can we meet in the middle on this?","m":"歩み寄りを提案","u":"","p":"B","dir":"ja2en"},{"d":"定型フレーズ","c":"交渉","f":"全体パッケージで考えましょう。","b":"Let's look at the whole package.","m":"一括で調整する","u":"","p":"B","dir":"ja2en"},{"d":"定型フレーズ","c":"依頼","f":"ご対応いただけますか。","b":"Could you take care of this?","m":"対応を依頼する","u":"","p":"A","dir":"ja2en"},{"d":"定型フレーズ","c":"依頼","f":"お手すきの際で構いません。","b":"Whenever you get a chance.","m":"急がない依頼","u":"","p":"A","dir":"ja2en"},{"d":"定型フレーズ","c":"依頼","f":"恐れ入りますが急ぎです。","b":"Sorry to rush, but this is time-sensitive.","m":"急ぎの依頼","u":"","p":"A","dir":"ja2en"},{"d":"定型フレーズ","c":"依頼","f":"優先してもらえると助かります。","b":"It would help if you could prioritize this.","m":"優先を依頼","u":"","p":"B","dir":"ja2en"},{"d":"定型フレーズ","c":"依頼","f":"ご確認をお願いします。","b":"Please review and let me know.","m":"確認を依頼","u":"","p":"A","dir":"ja2en"},{"d":"定型フレーズ","c":"依頼","f":"フィードバックをいただけますか。","b":"Could I get your feedback?","m":"意見を求める","u":"","p":"A","dir":"ja2en"},{"d":"定型フレーズ","c":"依頼","f":"ご都合を教えてください。","b":"Please let me know your availability.","m":"日程調整","u":"","p":"A","dir":"ja2en"},{"d":"定型フレーズ","c":"依頼","f":"少しお時間いただけますか。","b":"Do you have a few minutes?","m":"時間を求める","u":"","p":"A","dir":"ja2en"},{"d":"定型フレーズ","c":"依頼","f":"巻き込ませてください。","b":"Let me loop you in.","m":"関係者に加える","u":"","p":"B","dir":"ja2en"},{"d":"定型フレーズ","c":"依頼","f":"ドラフトを共有します。","b":"I'll circulate a draft.","m":"資料を回す","u":"","p":"A","dir":"ja2en"},{"d":"定型フレーズ","c":"催促","f":"進捗はいかがでしょうか。","b":"Any update on this?","m":"進捗を尋ねる","u":"","p":"A","dir":"ja2en"},{"d":"定型フレーズ","c":"催促","f":"先日の件のフォローです。","b":"Following up on my previous message.","m":"フォローする","u":"","p":"A","dir":"ja2en"},{"d":"定型フレーズ","c":"催促","f":"念のためリマインドです。","b":"Just a gentle reminder.","m":"やんわり催促","u":"","p":"A","dir":"ja2en"},{"d":"定型フレーズ","c":"催促","f":"期限が迫っています。","b":"We're coming up on the deadline.","m":"期限を伝える","u":"","p":"B","dir":"ja2en"},{"d":"定型フレーズ","c":"催促","f":"回答をお待ちしています。","b":"I look forward to your response.","m":"返信を促す","u":"","p":"A","dir":"ja2en"},{"d":"定型フレーズ","c":"催促","f":"いつ頃いただけそうですか。","b":"When can I expect this?","m":"期日を確認する","u":"","p":"B","dir":"ja2en"},{"d":"定型フレーズ","c":"断り","f":"今回は見送らせてください。","b":"We'll pass on this one.","m":"丁重に断る","u":"","p":"A","dir":"ja2en"},{"d":"定型フレーズ","c":"断り","f":"残念ながら難しいです。","b":"Unfortunately, that won't work for us.","m":"不可を伝える","u":"","p":"A","dir":"ja2en"},{"d":"定型フレーズ","c":"断り","f":"現時点では対応できません。","b":"We're not in a position to do that right now.","m":"現状不可","u":"","p":"B","dir":"ja2en"},{"d":"定型フレーズ","c":"断り","f":"方向性が合いません。","b":"This isn't the right fit for us.","m":"不適合を伝える","u":"","p":"B","dir":"ja2en"},{"d":"定型フレーズ","c":"断り","f":"条件が合えば再検討します。","b":"We'd revisit it if the terms change.","m":"含みを残す","u":"","p":"B","dir":"ja2en"},{"d":"定型フレーズ","c":"断り","f":"優先順位が下がっています。","b":"This is on the back burner for now.","m":"後回しを伝える","u":"","p":"B","dir":"ja2en"},{"d":"定型フレーズ","c":"報告","f":"結論から共有します。","b":"Let me start with the conclusion.","m":"結論先行で報告","u":"","p":"A","dir":"ja2en"},{"d":"定型フレーズ","c":"報告","f":"要点は3つです。","b":"There are three key points.","m":"論点を整理する","u":"","p":"A","dir":"ja2en"},{"d":"定型フレーズ","c":"報告","f":"順調に進んでいます。","b":"We're on track.","m":"進捗良好を報告","u":"","p":"A","dir":"ja2en"},{"d":"定型フレーズ","c":"報告","f":"少し遅れています。","b":"We're slightly behind schedule.","m":"遅延を報告","u":"","p":"B","dir":"ja2en"},{"d":"定型フレーズ","c":"報告","f":"リスクが一点あります。","b":"There's one risk to flag.","m":"リスクを共有","u":"","p":"A","dir":"ja2en"},{"d":"定型フレーズ","c":"報告","f":"経営陣に上げます。","b":"I'll flag this to management.","m":"上位に共有","u":"","p":"B","dir":"ja2en"},{"d":"定型フレーズ","c":"報告","f":"数字を精査中です。","b":"We're still crunching the numbers.","m":"作業中を伝える","u":"","p":"B","dir":"ja2en"},{"d":"定型フレーズ","c":"報告","f":"追ってご報告します。","b":"I'll keep you posted.","m":"続報を約束","u":"","p":"A","dir":"ja2en"},{"d":"定型フレーズ","c":"報告","f":"ハイライトだけ共有します。","b":"Let me share the highlights.","m":"要点のみ共有","u":"","p":"B","dir":"ja2en"},{"d":"定型フレーズ","c":"報告","f":"詳細は別途送ります。","b":"I'll send the details separately.","m":"詳細は後送","u":"","p":"A","dir":"ja2en"},{"d":"定型フレーズ","c":"締め","f":"ではその方向で進めます。","b":"Let's go with that, then.","m":"方針を確定","u":"","p":"A","dir":"ja2en"},{"d":"定型フレーズ","c":"締め","f":"宿題として引き取ります。","b":"I'll take that as a follow-up.","m":"持ち帰る","u":"","p":"B","dir":"ja2en"},{"d":"定型フレーズ","c":"締め","f":"次回までに準備します。","b":"I'll have it ready by next time.","m":"次回の約束","u":"","p":"A","dir":"ja2en"},{"d":"定型フレーズ","c":"締め","f":"本日はありがとうございました。","b":"Thanks, everyone, for your time.","m":"会議を締める","u":"","p":"A","dir":"ja2en"},{"d":"定型フレーズ","c":"締め","f":"議事録を共有します。","b":"I'll circulate the minutes.","m":"記録を回す","u":"","p":"A","dir":"ja2en"},{"d":"定型フレーズ","c":"締め","f":"来週前半に一度話しましょう。","b":"Let's touch base early next week.","m":"次回連絡を設定","u":"","p":"A","dir":"ja2en"},{"d":"定型フレーズ","c":"締め","f":"何かあれば連絡ください。","b":"Reach out if anything comes up.","m":"窓口を示す","u":"","p":"A","dir":"ja2en"},{"d":"定型フレーズ","c":"締め","f":"引き続きよろしくお願いします。","b":"Looking forward to working with you.","m":"継続を示す","u":"","p":"A","dir":"ja2en"},{"d":"定型フレーズ","c":"メール","f":"お世話になっております。","b":"I hope this email finds you well.","m":"メール冒頭の挨拶","u":"","p":"A","dir":"ja2en"},{"d":"定型フレーズ","c":"メール","f":"ご連絡ありがとうございます。","b":"Thank you for reaching out.","m":"返信の冒頭","u":"","p":"A","dir":"ja2en"},{"d":"定型フレーズ","c":"メール","f":"取り急ぎご連絡まで。","b":"Just a quick note to…","m":"短い連絡","u":"","p":"A","dir":"ja2en"},{"d":"定型フレーズ","c":"メール","f":"ご査収ください。","b":"Please find attached…","m":"添付を伝える","u":"","p":"A","dir":"ja2en"},{"d":"定型フレーズ","c":"メール","f":"ご不明点があればお知らせください。","b":"Please let me know if you have any questions.","m":"締めの定番","u":"","p":"A","dir":"ja2en"},{"d":"定型フレーズ","c":"メール","f":"お手数をおかけします。","b":"Thank you in advance for your help.","m":"依頼の締め","u":"","p":"A","dir":"ja2en"},{"d":"定型フレーズ","c":"メール","f":"ご返信お待ちしております。","b":"I look forward to hearing from you.","m":"返信を促す","u":"","p":"A","dir":"ja2en"},{"d":"定型フレーズ","c":"メール","f":"念のため再送します。","b":"Resending in case this was missed.","m":"再送する","u":"","p":"B","dir":"ja2en"},{"d":"定型フレーズ","c":"メール","f":"CCに〜を追加しました。","b":"I've added … to the thread.","m":"関係者追加","u":"","p":"B","dir":"ja2en"},{"d":"定型フレーズ","c":"メール","f":"ご都合のよい日時をお知らせください。","b":"Please let me know what works for you.","m":"日程調整","u":"","p":"A","dir":"ja2en"},{"d":"定型フレーズ","c":"メール","f":"よろしくお願いいたします。","b":"Best regards, / Thanks,","m":"結びの定番","u":"","p":"A","dir":"ja2en"},{"d":"イディオム","c":"改善・シナジーの優先順位づけ","f":"容易に得られる成果","b":"low-hanging fruit","m":"まず着手すべき、労力少なく効果が出る施策","u":"Let's start with the low-hanging fruit before tackling the harder synergies. / 難しいシナジーに入る前に、まず取りやすい成果から始めよう。","p":"A","dir":"ja2en"},{"d":"イディオム","c":"小手先でなく実質的成果を求める時","f":"状況を実質的に動かす","b":"move the needle","m":"全体に意味ある変化・効果を生む","u":"This cost cut is nice, but it won't really move the needle. / このコスト削減は良いが、大勢に影響するほどではない。","p":"A","dir":"ja2en"},{"d":"イディオム","c":"作業範囲の抑制を促す時","f":"手を広げすぎる","b":"boil the ocean","m":"非現実的なほど広範囲をやろうとする","u":"Let's not boil the ocean—focus on the top three risks. / 手を広げすぎず、上位3つのリスクに絞ろう。","p":"B","dir":"ja2en"},{"d":"イディオム","c":"初期の規模感を示す時","f":"概算の数字","b":"ballpark figure","m":"おおよその見積り","u":"Even a ballpark figure would help at this stage. / この段階では概算でも助かります。","p":"A","dir":"ja2en"},{"d":"イディオム","c":"精緻化前の簡易計算","f":"封筒の裏の粗い試算","b":"back of the envelope","m":"精緻化前のざっくり計算","u":"On a back-of-the-envelope basis, the deal looks accretive. / ざっくり試算では、この案件は増益になりそうだ。","p":"B","dir":"ja2en"},{"d":"イディオム","c":"譲れない論点の明示","f":"取引を壊す致命的条件","b":"deal breaker","m":"それがあると取引が成立しない点","u":"The uncapped indemnity is a deal breaker for us. / 無制限の補償は当方にとって受け入れられない条件だ。","p":"A","dir":"ja2en"},{"d":"イディオム","c":"初期的な関心確認","f":"本格検討前に軽く調べる","b":"kick the tires","m":"購入前に下見・様子見する","u":"We're just kicking the tires at this stage. / 現段階では軽く様子を見ている程度です。","p":"B","dir":"ja2en"},{"d":"イディオム","c":"DDでのリスク発見","f":"警戒すべき兆候","b":"red flag","m":"重大な問題の兆し","u":"The customer concentration is a red flag in the QoE. / 顧客集中はQoE上の警戒すべき兆候だ。","p":"A","dir":"ja2en"},{"d":"イディオム","c":"複雑な案件の説明","f":"絡み合う多くの要素","b":"moving parts","m":"変数・関係者が多く複雑な状態","u":"There are a lot of moving parts before we can sign. / 署名までに動いている要素が多い。","p":"B","dir":"ja2en"},{"d":"イディオム","c":"議論が細かすぎる時","f":"細部に埋もれている","b":"in the weeds","m":"枝葉に入り込みすぎた状態","u":"We're getting into the weeds—let's refocus. / 細かい話に入りすぎている。論点に戻ろう。","p":"B","dir":"ja2en"},{"d":"イディオム","c":"大局的整理を促す時","f":"全体を俯瞰した視点","b":"10,000-foot view","m":"大局的な見方","u":"Let's take a 10,000-foot view of the portfolio. / ポートフォリオを俯瞰して見てみよう。","p":"B","dir":"ja2en"},{"d":"イディオム","c":"比較可能性を確保する時","f":"同一条件での比較","b":"apples to apples","m":"公正に比較できる状態","u":"To compare apples to apples, use the same multiple. / 公正に比較するには同じ倍率を使おう。","p":"B","dir":"ja2en"},{"d":"イディオム","c":"避けられている論点の指摘","f":"誰もが避ける重大問題","b":"the elephant in the room","m":"気づいているが触れない核心","u":"Let's address the elephant in the room: the pension gap. / 核心に触れよう。年金の積立不足の件だ。","p":"B","dir":"ja2en"},{"d":"イディオム","c":"先延ばしを戒める時","f":"問題を先送りする","b":"kick the can down the road","m":"決断を先延ばしにする","u":"We can't keep kicking the can down the road on valuation. / 評価の話をこれ以上先送りにはできない。","p":"B","dir":"ja2en"},{"d":"イディオム","c":"再出資・インセンティブの文脈","f":"自らリスクを負う関与","b":"skin in the game","m":"身銭を切って関与すること","u":"Rollover equity gives the seller skin in the game. / ロールオーバー出資で売り手も当事者としてリスクを負う。","p":"B","dir":"ja2en"},{"d":"イディオム","c":"交渉の着地点","f":"双方に利益ある状況","b":"a win-win","m":"両者が得をする合意","u":"The earn-out structure is a win-win. / アーンアウトの仕組みは双方に利点がある。","p":"A","dir":"ja2en"},{"d":"イディオム","c":"要点を急ぐ時","f":"前置きを省き本題に入る","b":"cut to the chase","m":"要点に直行する","u":"Let me cut to the chase: the price is too high. / 率直に言うと、価格が高すぎる。","p":"A","dir":"ja2en"},{"d":"イディオム","c":"合意確認","f":"認識が一致している","b":"on the same page","m":"共通理解がある状態","u":"Let's make sure we're on the same page on scope. / 範囲について認識を合わせておこう。","p":"A","dir":"ja2en"},{"d":"イディオム","c":"難しい見立て","f":"成功確率の低い試み","b":"a long shot","m":"見込みの薄い挑戦","u":"Getting antitrust clearance quickly is a long shot. / 独禁法の早期承認は望み薄だ。","p":"B","dir":"ja2en"},{"d":"イディオム","c":"プロセス開始","f":"物事を始動させる","b":"get the ball rolling","m":"着手する","u":"Let's get the ball rolling on due diligence. / デューデリを始めよう。","p":"A","dir":"ja2en"},{"d":"イディオム","c":"努力・献身を表す","f":"期待以上に努力する","b":"go the extra mile","m":"求められた以上の働きをする","u":"The team went the extra mile to close on time. / チームは期日通りの成約のため全力を尽くした。","p":"B","dir":"ja2en"},{"d":"イディオム","c":"基準向上を示す","f":"水準を引き上げる","b":"raise the bar","m":"基準・ハードルを上げる","u":"This deal raised the bar for our sourcing standards. / この案件で我々のソーシング基準が上がった。","p":"B","dir":"ja2en"},{"d":"イディオム","c":"優先度を下げる時","f":"優先順位を下げる","b":"on the back burner","m":"後回しにする","u":"We put that target on the back burner. / そのターゲットは一旦後回しにした。","p":"B","dir":"ja2en"},{"d":"イディオム","c":"主導権の所在","f":"決定権を持つ","b":"call the shots","m":"采配を振るう","u":"In this deal, the sponsor calls the shots. / この案件ではスポンサーが決定権を握る。","p":"B","dir":"ja2en"},{"d":"イディオム","c":"契約の細部確認","f":"契約の細字条項","b":"fine print","m":"見落としやすい細かい条件","u":"Read the fine print before signing the NDA. / NDAに署名する前に細字条項を読もう。","p":"B","dir":"ja2en"},{"d":"イディオム","c":"即答する時","f":"すぐ思いつく範囲で","b":"off the top of my head","m":"即座に・記憶だけで","u":"Off the top of my head, the multiple was around 8x. / 記憶だけで言うと、倍率は8倍前後だった。","p":"B","dir":"ja2en"},{"d":"イディオム","c":"習熟を表す","f":"コツを覚える","b":"learn the ropes","m":"仕事の要領を習得する","u":"It took months to learn the ropes of cross-border deals. / クロスボーダー案件の要領を覚えるのに数か月かかった。","p":"B","dir":"ja2en"},{"d":"イディオム","c":"貢献・価値を問う","f":"価値をもたらす","b":"bring to the table","m":"スキル・強みを提供する","u":"What does this buyer bring to the table? / この買い手は何をもたらしてくれるのか。","p":"B","dir":"ja2en"},{"d":"イディオム","c":"舞台裏を語る","f":"裏で・目立たず","b":"behind the scenes","m":"水面下で動くこと","u":"A lot happened behind the scenes before signing. / 署名前に水面下で多くが動いた。","p":"B","dir":"ja2en"},{"d":"イディオム","c":"規律・順守を示す","f":"規則通りに","b":"by the book","m":"手順に忠実に","u":"We ran the auction strictly by the book. / 入札は厳密に手順通り進めた。","p":"B","dir":"ja2en"},{"d":"イディオム","c":"品質・順守の警告","f":"手を抜く・省略する","b":"cut corners","m":"近道して質やルールを犠牲にする","u":"We can't cut corners on compliance DD. / コンプラDDで手を抜くことはできない。","p":"B","dir":"ja2en"},{"d":"イディオム","c":"要約する時","f":"一言で言うと","b":"in a nutshell","m":"手短に要約すると","u":"In a nutshell, the numbers don't support the price. / 一言で言えば、数字が価格を正当化していない。","p":"A","dir":"ja2en"},{"d":"イディオム","c":"不確実性を示す","f":"どちらとも言えない領域","b":"grey area","m":"判断が不透明な部分","u":"The tax treatment here is a grey area. / ここの税務処理は判断が微妙な領域だ。","p":"B","dir":"ja2en"},{"d":"イディオム","c":"始動・立ち上げ","f":"事業を始動させる","b":"get off the ground","m":"計画を軌道に乗せ始める","u":"We need financing to get this deal off the ground. / この案件を動かすには資金調達が必要だ。","p":"B","dir":"ja2en"},{"d":"イディオム","c":"長期視点を示す","f":"長期にわたって","b":"for the long haul","m":"腰を据えて取り組む","u":"This is a platform we're building for the long haul. / これは長期で育てるプラットフォームだ。","p":"B","dir":"ja2en"},{"d":"イディオム","c":"発想の転換を促す","f":"既成概念にとらわれず考える","b":"think outside the box","m":"柔軟・創造的に発想する","u":"We had to think outside the box to bridge the gap. / 溝を埋めるため柔軟に発想する必要があった。","p":"B","dir":"ja2en"},{"d":"イディオム","c":"こまめな連絡","f":"短く連絡を取る","b":"touch base","m":"近況・進捗を軽く共有する","u":"Let's touch base after the management meeting. / マネジメント面談の後に一度連絡を取ろう。","p":"A","dir":"ja2en"},{"d":"イディオム","c":"増強・加速を示す","f":"規模・活動を増やす","b":"ramp up","m":"段階的に強化する","u":"We're ramping up our US sourcing efforts. / 米国でのソーシングを強化している。","p":"B","dir":"ja2en"},{"d":"イディオム","c":"結論を述べる時","f":"結局のところ","b":"at the end of the day","m":"最終的に重要なのは","u":"At the end of the day, it comes down to price and fit. / 結局のところ、価格と適合性に尽きる。","p":"A","dir":"ja2en"},{"d":"金融・会計英語","c":"財務諸表","f":"balance sheet","b":"貸借対照表","m":"","u":"B/S","p":"A","dir":"en2ja"},{"d":"金融・会計英語","c":"財務諸表","f":"income statement","b":"損益計算書","m":"","u":"P/L・I/S（英語圏はincome statementが一般的）","p":"A","dir":"en2ja"},{"d":"金融・会計英語","c":"財務諸表","f":"cash flow statement","b":"キャッシュフロー計算書","m":"","u":"C/F・C/S","p":"A","dir":"en2ja"},{"d":"金融・会計英語","c":"財務諸表","f":"trial balance","b":"試算表","m":"","u":"T/B","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"財務諸表","f":"financial statements","b":"決算書（財務諸表）","m":"","u":"FS","p":"A","dir":"en2ja"},{"d":"金融・会計英語","c":"財務諸表","f":"general ledger","b":"総勘定元帳","m":"","u":"G/L","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"財務諸表","f":"subsidiary ledger","b":"補助元帳","m":"","u":"S/L・sub-ledger","p":"C","dir":"en2ja"},{"d":"金融・会計英語","c":"財務諸表","f":"account","b":"勘定科目","m":"","u":"A/C・Acc","p":"A","dir":"en2ja"},{"d":"金融・会計英語","c":"財務諸表","f":"notes to financial statements","b":"注記","m":"","u":"-","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"財務諸表","f":"consolidated financial statements","b":"連結財務諸表","m":"","u":"-","p":"A","dir":"en2ja"},{"d":"金融・会計英語","c":"決算業務","f":"monthly closing","b":"月次決算","m":"","u":"-","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"決算業務","f":"quarterly closing","b":"四半期決算","m":"","u":"-","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"決算業務","f":"annual closing","b":"年次決算","m":"","u":"-","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"決算業務","f":"closing date","b":"決算締切日","m":"","u":"-","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"決算業務","f":"finalization","b":"決算確定","m":"","u":"-","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"決算業務","f":"financial audit","b":"会計監査","m":"","u":"-","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"決算業務","f":"audit report","b":"監査報告書","m":"","u":"-","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"決算業務","f":"audit opinion","b":"監査意見","m":"","u":"-","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"決算業務","f":"external audit","b":"外部監査","m":"","u":"-","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"決算業務","f":"internal audit","b":"内部監査","m":"","u":"-","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"会計基準","f":"US GAAP","b":"米国会計基準","m":"","u":"-","p":"A","dir":"en2ja"},{"d":"金融・会計英語","c":"会計基準","f":"IFRS","b":"国際会計基準","m":"","u":"-","p":"A","dir":"en2ja"},{"d":"金融・会計英語","c":"会計基準","f":"financial accounting","b":"財務会計","m":"","u":"-","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"会計基準","f":"managerial accounting","b":"管理会計","m":"","u":"-","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"会計基準","f":"tax accounting","b":"税務会計","m":"","u":"-","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"会計基準","f":"revenue recognition","b":"収益認識","m":"","u":"-","p":"A","dir":"en2ja"},{"d":"金融・会計英語","c":"会計基準","f":"asset valuation","b":"資産評価","m":"","u":"-","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"会計基準","f":"depreciation","b":"減価償却（有形）","m":"","u":"-","p":"A","dir":"en2ja"},{"d":"金融・会計英語","c":"会計基準","f":"amortization","b":"償却（無形）","m":"","u":"-","p":"A","dir":"en2ja"},{"d":"金融・会計英語","c":"会計基準","f":"straight-line method","b":"定額法","m":"","u":"-","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"会計基準","f":"impairment loss","b":"減損損失","m":"","u":"-","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"勘定科目・資産","f":"cash and cash equivalents","b":"現金及び預金","m":"","u":"-","p":"A","dir":"en2ja"},{"d":"金融・会計英語","c":"勘定科目・資産","f":"accounts receivable","b":"売掛金","m":"","u":"A/R","p":"A","dir":"en2ja"},{"d":"金融・会計英語","c":"勘定科目・資産","f":"inventory","b":"棚卸資産","m":"","u":"-","p":"A","dir":"en2ja"},{"d":"金融・会計英語","c":"勘定科目・資産","f":"prepaid expenses","b":"前払費用","m":"","u":"-","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"勘定科目・資産","f":"securities","b":"有価証券","m":"","u":"-","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"勘定科目・資産","f":"buildings","b":"建物","m":"","u":"-","p":"C","dir":"en2ja"},{"d":"金融・会計英語","c":"勘定科目・資産","f":"machinery and equipment","b":"機械装置","m":"","u":"-","p":"C","dir":"en2ja"},{"d":"金融・会計英語","c":"勘定科目・資産","f":"goodwill","b":"のれん","m":"","u":"-","p":"A","dir":"en2ja"},{"d":"金融・会計英語","c":"勘定科目・資産","f":"allowance for doubtful accounts","b":"貸倒引当金","m":"","u":"-","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"勘定科目・負債純資産","f":"accounts payable","b":"買掛金","m":"","u":"A/P","p":"A","dir":"en2ja"},{"d":"金融・会計英語","c":"勘定科目・負債純資産","f":"accrued expenses","b":"未払費用","m":"","u":"-","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"勘定科目・負債純資産","f":"allowance for bonuses","b":"賞与引当金","m":"","u":"-","p":"C","dir":"en2ja"},{"d":"金融・会計英語","c":"勘定科目・負債純資産","f":"long-term debt","b":"長期借入金","m":"","u":"-","p":"A","dir":"en2ja"},{"d":"金融・会計英語","c":"勘定科目・負債純資産","f":"capital stock","b":"資本金","m":"","u":"-","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"勘定科目・負債純資産","f":"capital surplus","b":"資本剰余金","m":"","u":"-","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"勘定科目・負債純資産","f":"retained earnings","b":"利益剰余金","m":"","u":"-","p":"A","dir":"en2ja"},{"d":"金融・会計英語","c":"勘定科目・負債純資産","f":"treasury stock","b":"自己株式","m":"","u":"-","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"勘定科目・損益","f":"sales / revenue","b":"売上高","m":"","u":"-","p":"A","dir":"en2ja"},{"d":"金融・会計英語","c":"勘定科目・損益","f":"cost of goods sold","b":"売上原価","m":"","u":"COGS・COS","p":"A","dir":"en2ja"},{"d":"金融・会計英語","c":"勘定科目・損益","f":"selling, general & administrative","b":"販売費及び一般管理費","m":"","u":"SG&A","p":"A","dir":"en2ja"},{"d":"金融・会計英語","c":"勘定科目・損益","f":"operating income","b":"営業利益","m":"","u":"-","p":"A","dir":"en2ja"},{"d":"金融・会計英語","c":"勘定科目・損益","f":"depreciation expense","b":"減価償却費","m":"","u":"-","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"勘定科目・損益","f":"advertising expense","b":"広告宣伝費","m":"","u":"-","p":"C","dir":"en2ja"},{"d":"金融・会計英語","c":"勘定科目・損益","f":"entertainment expense","b":"交際費","m":"","u":"-","p":"C","dir":"en2ja"},{"d":"金融・会計英語","c":"勘定科目・損益","f":"welfare expense","b":"福利厚生費","m":"","u":"-","p":"C","dir":"en2ja"},{"d":"金融・会計英語","c":"勘定科目・損益","f":"net income","b":"当期純利益","m":"","u":"-","p":"A","dir":"en2ja"},{"d":"金融・会計英語","c":"勘定科目・損益","f":"consolidated net profit","b":"連結純利益","m":"","u":"-","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"勘定科目・損益","f":"retained earnings / internal reserves","b":"内部留保","m":"","u":"-","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"税務","f":"corporate income tax","b":"法人税","m":"","u":"-","p":"A","dir":"en2ja"},{"d":"金融・会計英語","c":"税務","f":"consumption tax","b":"消費税","m":"","u":"海外はVAT","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"税務","f":"value added tax","b":"付加価値税","m":"","u":"VAT","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"税務","f":"tax adjustment","b":"税務調整","m":"","u":"-","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"税務","f":"permanent difference","b":"永久差異","m":"","u":"-","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"税務","f":"temporary difference","b":"一時差異","m":"","u":"-","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"税務","f":"deferred tax assets","b":"繰延税金資産","m":"","u":"DTA","p":"A","dir":"en2ja"},{"d":"金融・会計英語","c":"税務","f":"deferred tax liabilities","b":"繰延税金負債","m":"","u":"DTL","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"税務","f":"transfer pricing","b":"移転価格税制","m":"","u":"-","p":"A","dir":"en2ja"},{"d":"金融・会計英語","c":"税務","f":"tax haven","b":"タックス・ヘイブン（租税回避地）","m":"","u":"-","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"税務","f":"withholding tax","b":"源泉徴収税","m":"","u":"WHT","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"税務","f":"tax credit","b":"税額控除","m":"","u":"-","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"税務","f":"global minimum tax","b":"グローバル・ミニマム課税","m":"","u":"Pillar 2","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"財務指標","f":"earnings per share","b":"一株当たり利益","m":"","u":"EPS","p":"A","dir":"en2ja"},{"d":"金融・会計英語","c":"財務指標","f":"return on equity","b":"株主資本利益率","m":"","u":"ROE","p":"A","dir":"en2ja"},{"d":"金融・会計英語","c":"財務指標","f":"return on assets","b":"総資産利益率","m":"","u":"ROA","p":"A","dir":"en2ja"},{"d":"金融・会計英語","c":"財務指標","f":"return on invested capital","b":"投下資本利益率","m":"","u":"ROIC","p":"A","dir":"en2ja"},{"d":"金融・会計英語","c":"財務指標","f":"capital adequacy ratio","b":"自己資本比率","m":"","u":"-","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"財務指標","f":"debt-equity ratio","b":"負債比率","m":"","u":"D/E","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"財務指標","f":"dividend payout ratio","b":"配当性向","m":"","u":"-","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"財務指標","f":"dividend yield","b":"配当利回り","m":"","u":"-","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"財務指標","f":"market capitalization","b":"時価総額","m":"","u":"market cap","p":"A","dir":"en2ja"},{"d":"金融・会計英語","c":"財務指標","f":"valuation","b":"（株価）評価","m":"","u":"-","p":"A","dir":"en2ja"},{"d":"金融・会計英語","c":"財務指標","f":"fundamentals","b":"ファンダメンタルズ","m":"","u":"-","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"財務指標","f":"valuation of intangibles","b":"のれん・無形資産評価","m":"","u":"-","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"マクロ・市場","f":"foreign direct investment","b":"海外直接投資","m":"","u":"FDI","p":"A","dir":"en2ja"},{"d":"金融・会計英語","c":"マクロ・市場","f":"currency risk / FX exposure","b":"為替リスク","m":"","u":"-","p":"A","dir":"en2ja"},{"d":"金融・会計英語","c":"マクロ・市場","f":"foreign exchange hedge","b":"為替ヘッジ","m":"","u":"-","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"マクロ・市場","f":"monetary easing","b":"金融緩和","m":"","u":"-","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"マクロ・市場","f":"monetary tightening","b":"金融引き締め","m":"","u":"-","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"マクロ・市場","f":"recession","b":"景気後退","m":"","u":"-","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"マクロ・市場","f":"geopolitical risk","b":"地政学リスク","m":"","u":"-","p":"A","dir":"en2ja"},{"d":"金融・会計英語","c":"マクロ・市場","f":"supply chain","b":"サプライチェーン（供給網）","m":"","u":"-","p":"A","dir":"en2ja"},{"d":"金融・会計英語","c":"マクロ・市場","f":"interest rate risk","b":"金利リスク","m":"","u":"-","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"マクロ・市場","f":"credit risk","b":"信用リスク","m":"","u":"-","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"マクロ・市場","f":"liquidity risk","b":"流動性リスク","m":"","u":"-","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"マクロ・市場","f":"credit rating","b":"格付け","m":"","u":"-","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"マクロ・市場","f":"emerging markets","b":"新興市場","m":"","u":"-","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"マクロ・市場","f":"cross-shareholdings","b":"政策保有株（持合株）","m":"","u":"-","p":"A","dir":"en2ja"},{"d":"金融・会計英語","c":"マクロ・市場","f":"activist investor","b":"モノ言う株主","m":"","u":"-","p":"A","dir":"en2ja"},{"d":"金融・会計英語","c":"マクロ・市場","f":"proxy voting","b":"議決権行使","m":"","u":"-","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"マクロ・市場","f":"exit strategy","b":"出口戦略","m":"","u":"-","p":"A","dir":"en2ja"},{"d":"金融・会計英語","c":"マクロ・市場","f":"divestment","b":"ダイベストメント（投資引揚げ）","m":"","u":"-","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"マクロ・市場","f":"repatriation","b":"内部留保の本国送金","m":"","u":"-","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"ESG","f":"Environmental, Social, Governance","b":"ESG（環境・社会・ガバナンス）","m":"","u":"ESG","p":"A","dir":"en2ja"},{"d":"金融・会計英語","c":"ESG","f":"carbon neutrality","b":"カーボンニュートラル","m":"","u":"-","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"ESG","f":"decarbonization","b":"脱炭素","m":"","u":"-","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"ESG","f":"carbon tax","b":"炭素税","m":"","u":"-","p":"C","dir":"en2ja"},{"d":"金融・会計英語","c":"ESG","f":"responsible investment","b":"責任投資","m":"","u":"-","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"ESG","f":"sustainable finance","b":"サステナブル・ファイナンス","m":"","u":"-","p":"B","dir":"en2ja"},{"d":"金融・会計英語","c":"ESG","f":"transition finance","b":"トランジション・ファイナンス","m":"","u":"-","p":"C","dir":"en2ja"},{"d":"金融・会計英語","c":"ESG","f":"Sustainable Development Goals","b":"持続可能な開発目標","m":"","u":"SDGs","p":"B","dir":"en2ja"}];
-let mode='flash';
+DATA.forEach((c,i)=>{ c.id = c.d+'||'+c.f; c._i=i; });
+
+/* ---------- persistence ---------- */
+const LS_KEY='ma_vocab_progress_v1';
+const LS_SRS='ma_vocab_srs_v1';
+let storageOK=true;
+let progress={}; // id -> 'known' | 'fuzzy'
+let srs={};      // id -> {lvl:int, due:'YYYY-MM-DD'}
+try{
+  const raw=localStorage.getItem(LS_KEY);
+  if(raw) progress=JSON.parse(raw);
+  const rawS=localStorage.getItem(LS_SRS);
+  if(rawS) srs=JSON.parse(rawS);
+  localStorage.setItem('__t','1'); localStorage.removeItem('__t');
+}catch(e){ storageOK=false; }
+function save(){ if(!storageOK) return; try{
+  localStorage.setItem(LS_KEY,JSON.stringify(progress));
+  localStorage.setItem(LS_SRS,JSON.stringify(srs));
+}catch(e){} }
+function setState(id,st){ if(st===null) delete progress[id]; else progress[id]=st; save(); refreshStats(); }
+function stateOf(id){ return progress[id]||'new'; }
+if(!storageOK) document.getElementById('storageWarn').style.display='block';
+
+/* ---------- spaced repetition (SM-2 簡略版) ---------- */
+// レベル→次回までの日数。0=当日/翌日の学び直し
+const SRS_STEPS=[1,3,7,16,35,75,150];
+function todayStr(){ const d=new Date(); d.setHours(0,0,0,0);
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function addDays(n){ const d=new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate()+n);
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function srsOf(id){ return srs[id]||null; }
+function isDue(id){ const s=srs[id]; if(!s) return false; return s.due<=todayStr(); }
+function reviewCard(id, ok){
+  // ok=true(覚えた)→レベル上げて間隔延長 / false(あやふや)→レベル0・翌日
+  let s=srs[id]||{lvl:0,due:todayStr()};
+  if(ok){ s.lvl=Math.min(s.lvl+1, SRS_STEPS.length-1); s.due=addDays(SRS_STEPS[s.lvl]); }
+  else { s.lvl=0; s.due=addDays(1); }
+  srs[id]=s; save();
+}
+function dueCount(){
+  const t=todayStr();
+  return DATA.filter(c=>baseFilter(c) && srs[c.id] && srs[c.id].due<=t).length;
+}
+function newCountForReview(){
+  return DATA.filter(c=>baseFilter(c) && !srs[c.id]).length;
+}
+
+/* ---------- global setup state ---------- */
+let mode='flash', source='review', sessionSize=20;
 let activeDecks=new Set(), activePris=new Set(['A','B','C']), activeCats=new Set();
-let deck=[], idx=0, revealed=false, score={ok:0,total:0};
 
 const DECKS=[...new Set(DATA.map(c=>c.d))];
 DECKS.forEach(d=>activeDecks.add(d));
 
-// build deck chips
 const deckChips=document.getElementById('deckChips');
 DECKS.forEach(d=>{
   const el=document.createElement('span');
-  el.className='chip on'; el.textContent=d; el.dataset.d=d;
+  el.className='chip dk4 on'; el.textContent=d; el.dataset.d=d;
   el.onclick=()=>{ el.classList.toggle('on');
     el.classList.contains('on')?activeDecks.add(d):activeDecks.delete(d);
-    buildCats(); rebuild(); };
+    buildCats(); refreshAvail(); };
   deckChips.appendChild(el);
 });
-
 function buildCats(){
   const catRow=document.getElementById('catRow');
   const cats=[...new Set(DATA.filter(c=>activeDecks.has(c.d)).map(c=>c.c))];
-  // hide category filter when too many/irrelevant (idioms) or single
-  const usable = cats.length>1 && cats.length<=14;
-  catRow.style.display = usable ? 'flex':'none';
+  const usable=cats.length>1 && cats.length<=14;
+  catRow.style.display=usable?'flex':'none';
   const box=document.getElementById('catChips'); box.innerHTML='';
   activeCats=new Set(cats);
   if(!usable) return;
@@ -177,76 +356,122 @@ function buildCats(){
     const el=document.createElement('span');
     el.className='chip on'; el.textContent=c; el.dataset.c=c;
     el.onclick=()=>{ el.classList.toggle('on');
-      el.classList.contains('on')?activeCats.add(c):activeCats.delete(c); rebuild();};
+      el.classList.contains('on')?activeCats.add(c):activeCats.delete(c); refreshAvail();};
     box.appendChild(el);
   });
 }
+function togglePri(el){ el.classList.toggle('on'); const p=el.dataset.p;
+  el.classList.contains('on')?activePris.add(p):activePris.delete(p); refreshAvail(); }
+function pickSource(el){ document.querySelectorAll('#sourceSeg .chip').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on'); source=el.dataset.s; refreshAvail(); }
+function pickMode(m){ mode=m; document.getElementById('mFlash').classList.toggle('on',m==='flash');
+  document.getElementById('mQuiz').classList.toggle('on',m==='quiz'); }
+function pickSize(el){ document.querySelectorAll('#sizeSeg .chip').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on'); sessionSize=+el.dataset.n; }
 
-function togglePri(el){
-  el.classList.toggle('on');
-  const p=el.dataset.p;
-  el.classList.contains('on')?activePris.add(p):activePris.delete(p);
-  rebuild();
+/* ---------- pool building ---------- */
+function baseFilter(c){
+  const catOn = document.getElementById('catRow').style.display==='none' || activeCats.has(c.c);
+  return activeDecks.has(c.d) && activePris.has(c.p) && catOn;
 }
-function setMode(m){
-  mode=m;
-  document.getElementById('mFlash').classList.toggle('on',m==='flash');
-  document.getElementById('mQuiz').classList.toggle('on',m==='quiz');
-  document.getElementById('scoreLbl').textContent='';
-  score={ok:0,total:0};
-  rebuild();
+function sourceFilter(c){
+  if(source==='all') return true;
+  if(source==='fuzzy') return stateOf(c.id)==='fuzzy';
+  if(source==='new') return stateOf(c.id)==='new';
+  return true;
 }
-document.getElementById('optReverse').onchange=()=>render();
-document.getElementById('optHideMeaning').onchange=()=>render();
-
-function filtered(){
-  return DATA.filter(c=>activeDecks.has(c.d)&&activePris.has(c.p)&&
-    (document.getElementById('catRow').style.display==='none'||activeCats.has(c.c)));
+function currentPool(){
+  if(source==='review'){
+    // 期限到来分を優先、その後に新規語（未SRS）を続ける
+    const t=todayStr();
+    const due=DATA.filter(c=>baseFilter(c) && srs[c.id] && srs[c.id].due<=t);
+    const fresh=DATA.filter(c=>baseFilter(c) && !srs[c.id]);
+    // due を期限の古い順に、fresh はそのまま
+    due.sort((a,b)=> srs[a.id].due<srs[b.id].due?-1:1);
+    return [...due, ...fresh];
+  }
+  return DATA.filter(c=>baseFilter(c)&&sourceFilter(c));
 }
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];}return a;}
 
-function rebuild(){
-  deck=filtered(); idx=0; revealed=false;
-  document.getElementById('count').textContent=deck.length+' 語 / 全'+DATA.length+'語';
-  render();
+function refreshAvail(){
+  const pool=currentPool();
+  const lbl=document.getElementById('availLbl');
+  const n=pool.length;
+  const take=sessionSize===0?n:Math.min(sessionSize,n);
+  if(source==='review'){
+    const d=dueCount(), nw=newCountForReview();
+    lbl.textContent = n===0 ? '今日の復習・新規はありません（設定範囲内）'
+      : `復習期限 ${d}語 ＋ 新規 ${nw}語 → 今回 ${take}問を出題`;
+  } else {
+    lbl.textContent = n===0 ? '該当する語がありません' : `該当 ${n}語 → 今回 ${take}問を出題`;
+  }
+  document.getElementById('startBtn').disabled = n===0;
 }
-function shuffleDeck(){ shuffle(deck); idx=0; revealed=false; render(); }
+function refreshStats(){
+  let k=0,f=0,nw=0;
+  DATA.forEach(c=>{const s=stateOf(c.id); if(s==='known')k++; else if(s==='fuzzy')f++; else nw++;});
+  const t=todayStr();
+  const due=DATA.filter(c=>srs[c.id] && srs[c.id].due<=t).length;
+  document.getElementById('stDue').textContent=due;
+  document.getElementById('stNew').textContent=nw;
+  document.getElementById('stKnown').textContent=k;
+  document.getElementById('stFuzzy').textContent=f;
+  document.getElementById('count').textContent=`全${DATA.length}語 / 覚えた${k} · あやふや${f}`;
+  refreshAvail();
+}
 
+/* ---------- screens ---------- */
+function showScreen(s){
+  document.getElementById('setupScreen').style.display = s==='setup'?'block':'none';
+  document.getElementById('playScreen').style.display = s==='play'?'block':'none';
+  document.getElementById('listsScreen').style.display = s==='lists'?'block':'none';
+  document.getElementById('navBar').style.display = s==='play'?'block':'none';
+  document.getElementById('tabStudy').classList.toggle('on', s==='setup'||s==='play');
+  document.getElementById('tabLists').classList.toggle('on', s==='lists');
+  if(s==='lists') renderList();
+  if(s==='setup') refreshStats();
+}
+
+/* ---------- session ---------- */
+let deck=[], idx=0, revealed=false, score={ok:0,total:0}, sessionFuzzy=[];
+function startSession(){
+  let pool=currentPool();
+  // 「今日の復習」は期限の古い順を優先するためシャッフルしない
+  if(source!=='review' && document.getElementById('optShuffle').checked) shuffle(pool);
+  if(sessionSize>0) pool=pool.slice(0,sessionSize);
+  deck=pool; idx=0; revealed=false; score={ok:0,total:0}; sessionFuzzy=[];
+  showScreen('play'); render();
+}
 function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-
+function faceOf(c){
+  const rev=document.getElementById('optReverse').checked;
+  let q,a; if(!rev){q=c.f;a=c.b;}else{q=c.b;a=c.f;}
+  const fIsEn=c.dir==='en2ja';
+  return {q,a,qSerif:rev?!fIsEn:fIsEn,aSerif:rev?fIsEn:!fIsEn};
+}
 function render(){
   const stage=document.getElementById('stage');
-  if(deck.length===0){ stage.innerHTML='<div class="empty">条件に合う語がありません。<br>デッキ・重要度・カテゴリの絞り込みを見直してください。</div>';
-    updateNav(); return; }
-  if(idx>=deck.length) idx=deck.length-1;
+  if(deck.length===0){ renderSummary(); return; }
+  if(idx>=deck.length){ renderSummary(); return; }
   mode==='flash'?renderFlash():renderQuiz();
   updateNav();
 }
-
-function faceOf(c){
-  // returns {q, a, aMeaning, aUsage, qSerif, aSerif}
-  const rev=document.getElementById('optReverse').checked;
-  // default front per card.dir: en2ja -> front is English(f). ja2en -> front is Japanese(f)
-  // card.f is always the "front", card.b the other language main
-  let q,a,qSerif,aSerif;
-  if(!rev){ q=c.f; a=c.b; }
-  else{ q=c.b; a=c.f; }
-  // serif when the text is English
-  const fIsEn = c.dir==='en2ja';        // f is English
-  qSerif = rev? !fIsEn : fIsEn;
-  aSerif = rev? fIsEn : !fIsEn;
-  return {q,a,qSerif,aSerif};
+function stateDot(c){
+  const s=stateOf(c.id);
+  if(s==='known') return '<span class="stat-dot known">覚えた</span>';
+  if(s==='fuzzy') return '<span class="stat-dot fuzzy">あやふや</span>';
+  return '';
 }
-
 function renderFlash(){
   const c=deck[idx]; const f=faceOf(c);
   const hideM=document.getElementById('optHideMeaning').checked;
-  const meaning = (!hideM&&c.m)?`<div class="ans-meaning">${esc(c.m)}</div>`:'';
-  const usage = c.u?`<div class="ans-usage">例: ${esc(c.u)}</div>`:'';
-  const catLine = `<div class="cat-line">${esc(c.d)}${c.c?' · '+esc(c.c):''}</div>`;
+  const meaning=(!hideM&&c.m)?`<div class="ans-meaning">${esc(c.m)}</div>`:'';
+  const usage=c.u?`<div class="ans-usage">例: ${esc(c.u)}</div>`:'';
+  const catLine=`<div class="cat-line">${esc(c.d)}${c.c?' · '+esc(c.c):''}</div>`;
   document.getElementById('stage').innerHTML=`
     <div class="card" onclick="reveal()">
-      <div class="badges"><span class="pri ${c.p}">${c.p}</span><span class="deck-tag">${esc(c.d)}</span></div>
+      <div class="badges"><span class="pri ${c.p}">${c.p}</span><span class="deck-tag">${esc(c.d)}</span>${stateDot(c)}</div>
       <div class="flip-hint">${revealed?'':'タップで答え'}</div>
       <div class="front-txt ${f.qSerif?'serif':''}">${esc(f.q)}</div>
       ${revealed?'':'<div class="prompt-sub">意味・訳を思い浮かべてからタップ</div>'}
@@ -254,81 +479,155 @@ function renderFlash(){
         <div class="ans-main ${f.aSerif?'serif':''}">${esc(f.a)}</div>
         ${meaning}${usage}${catLine}
         <div class="grade">
-          <button class="g-no" onclick="event.stopPropagation();grade(false)">あやふや</button>
-          <button class="g-ok" onclick="event.stopPropagation();grade(true)">覚えた</button>
+          <button class="g-no" onclick="event.stopPropagation();grade('fuzzy')">あやふや</button>
+          <button class="g-ok" onclick="event.stopPropagation();grade('known')">覚えた</button>
         </div>
       </div>
     </div>`;
 }
 function reveal(){ if(!revealed){revealed=true;render();} }
-function grade(ok){
-  // move graded card: ok -> advance; no -> push near-future for re-test
-  if(!ok){
-    const c=deck.splice(idx,1)[0];
-    const pos=Math.min(idx+4, deck.length);
-    deck.splice(pos,0,c);
-  } else { idx++; }
-  revealed=false;
-  if(idx>=deck.length) idx=deck.length-1;
-  render();
+function grade(st){
+  const c=deck[idx];
+  setState(c.id, st);
+  reviewCard(c.id, st==='known');
+  if(st==='fuzzy' && !sessionFuzzy.find(x=>x.id===c.id)) sessionFuzzy.push(c);
+  idx++; revealed=false; render();
 }
 
-let quizChoices=[], quizAnswered=false;
+let quizAnswered=false, pendingQuiz=null;
 function renderQuiz(){
-  const c=deck[idx]; const f=faceOf(c);
-  quizAnswered=false;
-  // build 4 choices from same deck pool, answer side = f.a
-  const pool=DATA.filter(x=>x.d===c.d && x!==c);
-  const distr=shuffle([...pool]).slice(0,3).map(x=>{
-    const rev=document.getElementById('optReverse').checked;
-    return rev? x.f : x.b;
-  });
-  quizChoices=shuffle([f.a,...distr]);
-  const html=quizChoices.map((ch,i)=>`<button class="choice" data-i="${i}" onclick="answer(${i})">${esc(ch)}</button>`).join('');
+  const c=deck[idx]; const f=faceOf(c); quizAnswered=false; pendingQuiz=null;
+  const rev=document.getElementById('optReverse').checked;
+  const pool=DATA.filter(x=>x.d===c.d && x.id!==c.id);
+  const distr=shuffle([...pool]).slice(0,3).map(x=>rev?x.f:x.b);
+  const choices=shuffle([f.a,...distr]);
+  const html=choices.map((ch,i)=>`<button class="choice" data-i="${i}" onclick="answer(this,${JSON.stringify(ch===f.a)})">${esc(ch)}</button>`).join('');
   document.getElementById('stage').innerHTML=`
     <div class="quiz-q">
-      <div class="badges" style="position:static;margin-bottom:10px"><span class="pri ${c.p}">${c.p}</span><span class="deck-tag">${esc(c.d)}${c.c?' · '+esc(c.c):''}</span></div>
+      <div class="badges" style="position:static;margin-bottom:10px"><span class="pri ${c.p}">${c.p}</span><span class="deck-tag">${esc(c.d)}${c.c?' · '+esc(c.c):''}</span>${stateDot(c)}</div>
       <div class="quiz-prompt ${f.qSerif?'serif':''}">${esc(f.q)}</div>
-      <div class="quiz-sub">正しい${document.getElementById('optReverse').checked? '用語':'訳・意味'}を選択</div>
+      <div class="quiz-sub">正しい${rev?'用語':'訳・意味'}を選択</div>
       <div class="choices">${html}</div>
       <div class="quiz-explain" id="qexp"></div>
+      <div class="quiz-grade" id="qgrade" style="display:none">
+        <button class="g-no" style="color:var(--fuzzy);border-color:var(--fuzzy)" onclick="quizGrade('fuzzy')">あやふや扱いにする</button>
+        <button class="g-ok" style="color:var(--brand);border-color:var(--brand)" onclick="quizGrade('known')">覚えた扱いにする</button>
+      </div>
     </div>`;
 }
-function answer(i){
+function answer(btn,correct){
   if(quizAnswered) return; quizAnswered=true;
   const c=deck[idx]; const f=faceOf(c);
-  const btns=document.querySelectorAll('.choice');
-  btns.forEach(b=>{ b.disabled=true;
-    if(b.textContent===f.a) b.classList.add('correct');
-  });
-  const chosen=btns[i];
-  const correct = chosen.textContent===f.a;
-  if(!correct) chosen.classList.add('wrong');
+  document.querySelectorAll('.choice').forEach(b=>{ b.disabled=true;
+    if(b.textContent===f.a) b.classList.add('correct'); });
+  if(!correct) btn.classList.add('wrong');
   score.total++; if(correct) score.ok++;
   document.getElementById('scoreLbl').textContent=`正答 ${score.ok}/${score.total}`;
-  const exp=document.getElementById('qexp');
-  let e=[];
-  if(c.m) e.push(esc(c.m));
-  if(c.u) e.push('例: '+esc(c.u));
-  exp.innerHTML=(correct?'✓ 正解。 ':'✕ 正解は上のとおり。 ')+e.join(' / ');
+  let e=[]; if(c.m)e.push(esc(c.m)); if(c.u)e.push('例: '+esc(c.u));
+  document.getElementById('qexp').innerHTML=(correct?'✓ 正解。 ':'✕ 正解は上のとおり。 ')+e.join(' / ');
+  // auto-record: correct->known, wrong->fuzzy (but allow override)
+  const auto = correct?'known':'fuzzy';
+  setState(c.id, auto);
+  pendingQuiz = {id:c.id, ok:(auto==='known')};
+  if(auto==='fuzzy' && !sessionFuzzy.find(x=>x.id===c.id)) sessionFuzzy.push(c);
+  document.getElementById('qgrade').style.display='flex';
+}
+function quizGrade(st){
+  const c=deck[idx]; setState(c.id,st);
+  pendingQuiz = {id:c.id, ok:(st==='known')};
+  if(st==='fuzzy' && !sessionFuzzy.find(x=>x.id===c.id)) sessionFuzzy.push(c);
+  else if(st==='known') sessionFuzzy=sessionFuzzy.filter(x=>x.id!==c.id);
+  next();
 }
 
-function next(){ if(idx<deck.length-1){idx++;revealed=false;render();} }
+function renderSummary(){
+  document.getElementById('navBar').style.display='none';
+  const done=score.total>0;
+  const acc = done? Math.round(score.ok/score.total*100):0;
+  let fuzzHtml='';
+  if(sessionFuzzy.length){
+    fuzzHtml=`<div class="sum-list"><h3>今回あやふやにした語（${sessionFuzzy.length}）</h3>`+
+      sessionFuzzy.map(c=>`<div class="sum-item">${esc(c.f)} — ${esc(c.b)}</div>`).join('')+`</div>`;
+  }
+  const scoreBlock = mode==='quiz' && done
+    ? `<div class="big">${score.ok} / ${score.total}</div><div class="sub">正答率 ${acc}%</div>`
+    : `<div class="big">${deck.length}枚</div><div class="sub">学習完了</div>`;
+  document.getElementById('stage').innerHTML=`
+    <div class="summary">
+      <h2>セッション終了</h2>
+      ${scoreBlock}
+      <div class="sum-actions">
+        <button class="primary" onclick="startSession()">もう${sessionSize||'一'}${sessionSize?'問':'巡'}</button>
+        <button class="ghost" onclick="showScreen('setup')">設定に戻る</button>
+        <button class="ghost" onclick="showScreen('lists')">記録リストを見る</button>
+      </div>
+      ${fuzzHtml}
+    </div>`;
+}
+function commitPendingQuiz(){
+  if(pendingQuiz){ reviewCard(pendingQuiz.id, pendingQuiz.ok); pendingQuiz=null; }
+}
+function next(){ commitPendingQuiz(); idx++; revealed=false; render(); }
 function prev(){ if(idx>0){idx--;revealed=false;render();} }
+function endSession(){ commitPendingQuiz(); renderSummary(); }
 function updateNav(){
-  document.getElementById('pos').textContent=(deck.length?idx+1:0)+' / '+deck.length;
-  document.getElementById('bar').style.width=(deck.length?((idx+1)/deck.length*100):0)+'%';
+  document.getElementById('pos').textContent=(idx+1)+' / '+deck.length;
+  document.getElementById('bar').style.width=((idx+1)/deck.length*100)+'%';
   document.getElementById('prevBtn').disabled=idx<=0;
   document.getElementById('nextBtn').disabled=idx>=deck.length-1;
 }
 document.addEventListener('keydown',e=>{
+  if(document.getElementById('playScreen').style.display==='none') return;
   if(e.key==='ArrowRight')next();
   else if(e.key==='ArrowLeft')prev();
   else if(e.key===' '&&mode==='flash'){e.preventDefault(); revealed?next():reveal();}
 });
 
+/* ---------- lists screen ---------- */
+let listType='fuzzy';
+function pickList(el){ document.querySelectorAll('#listSeg .chip').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on'); listType=el.dataset.l; renderList(); }
+function renderList(){
+  const box=document.getElementById('listBox');
+  const items=DATA.filter(c=>stateOf(c.id)===listType);
+  if(items.length===0){ box.innerHTML=`<div class="list-empty">この分類の語はまだありません。</div>`; return; }
+  box.innerHTML=items.map(c=>{
+    const fIsEn=c.dir==='en2ja';
+    const st=stateOf(c.id);
+    const jid=c.id.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    return `<div class="litem">
+      <div class="lfront ${fIsEn?'serif':''}">${esc(c.f)}</div>
+      <div class="lback">${esc(c.b)}${c.m?' — '+esc(c.m):''}</div>
+      <div class="lstate-group">
+        <button class="sbtn ${st==='new'?'on-new':''}" onclick="markState('${jid}','new')">未学習</button>
+        <button class="sbtn ${st==='fuzzy'?'on-fuzzy':''}" onclick="markState('${jid}','fuzzy')">△ あやふや</button>
+        <button class="sbtn ${st==='known'?'on-known':''}" onclick="markState('${jid}','known')">✓ 覚えた</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+function markState(id,st){
+  setState(id, st==='new'?null:st);
+  renderList();
+}
+function exportList(){
+  const items=DATA.filter(c=>stateOf(c.id)===listType);
+  const tsv=items.map(c=>[c.f,c.b,c.m||'',c.d,c.c||''].join('\t')).join('\n');
+  const head=['用語','訳','意味','デッキ','カテゴリ'].join('\t');
+  navigator.clipboard.writeText(head+'\n'+tsv).then(()=>{
+    alert('一覧をコピーしました（'+items.length+'語）。Excelに貼り付けできます。');
+  }).catch(()=>{ alert('コピーに失敗しました。'); });
+}
+function resetProgress(){
+  if(confirm('覚えた・あやふやの記録と復習スケジュールをすべて消去します。よろしいですか。')){
+    progress={}; srs={}; save(); refreshStats(); renderList();
+  }
+}
+
+/* ---------- init ---------- */
 buildCats();
-rebuild();
+refreshStats();
+showScreen('setup');
 </script>
 </body>
 </html>
